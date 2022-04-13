@@ -17,6 +17,9 @@
      &          "             Revision 1.0             ",/,             &
      &          "               PC Version             ",/,             &
      &          "    Program reading . . . executing",/)
+      
+      !! find critical shear for Peter
+      !call peter_tc
 
       call basin_read_objs
       call readcio_read

@@ -20,9 +20,9 @@
       !! if routing over the hru, add the runon/runoff
       if (hru1(ihru)%rout_over == "y") then
           
-          ob(iob)%hd(3)%flo = ob(iob)%hd(3)%flo + ob(iob)%hin_sur%flo * hru1(ihru)%rout_dr(3)%flo
-          ob(iob)%hd(4)%flo = ob(iob)%hd(4)%flo + ob(iob)%hin_lat%flo * hru1(ihru)%rout_dr(4)%flo
-          ob(iob)%hd(5)%flo = ob(iob)%hd(5)%flo + ob(iob)%hin_lat%flo * hru1(ihru)%rout_dr(5)%flo
+          ob(iob)%hd(3)%flo = ob(iob)%hd(3)%flo + ob(iob)%hin_sur%flo * hru2(ihru)%rout_dr(3)%flo
+          ob(iob)%hd(4)%flo = ob(iob)%hd(4)%flo + ob(iob)%hin_lat%flo * hru2(ihru)%rout_dr(4)%flo
+          ob(iob)%hd(5)%flo = ob(iob)%hd(5)%flo + ob(iob)%hin_lat%flo * hru2(ihru)%rout_dr(5)%flo
           ob(iob)%hd(1)%flo = ob(iob)%hd(3)%flo + ob(iob)%hd(4)%flo + ob(iob)%hd(5)%flo
           !! don't adjust percolation
           !! need sed, orgn, sedp, no3, solp, nh3, no2 for each hdyrograph

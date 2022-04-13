@@ -1,26 +1,16 @@
-      module channel_module1
+﻿      module channel_module1
     
       implicit none
 
-      type exco_del_ratios          !!if delivery ratio for routing, all units in fraction delivered
-        real :: flo = 0.            !! precip ratio     |volume of water
-        real :: sed = 0.            !! t/ha             |sediment
-        real :: orgn = 0.           !! kg N/ha          |organic N
-        real :: sedp = 0.           !! kg P/ha          |organic P
-        real :: no3 = 0.            !! kg N/ha          |NO3-N
-        real :: solp = 0.           !! kg P/ha          |mineral (soluble P)
-        real :: nh3 = 0.            !! kg N/ha          |NH3
-        real :: no2 = 0.            !! kg N/ha          |NO2
-      end type exco_del_ratios
-
-      type channel_data
+      type channel_data1
+        character(len=25) :: name
         character(len=16) :: order
         real :: chw = 0.        !m          |channel width
         real :: chd = 0.        !m          |channel depth
         real :: chs = 0.        !m/m        |channel slope
         real :: chl = 0.        !km         |channel length
         real :: chn = 0.        !           |channel Manning's n
-        real :: chk = 0.        !mm/h       |channel bottom conductivity
+        real :: wd_yr = 0.      !frac       |baseline widths per year of erosion
         real :: cherod = 0.     !           |channel erodibility
         real :: cov = 0.        !0-1        |channel cover factor
         real :: wd_rto = 0.     !0.5-100    |width depth ratio
@@ -36,19 +26,23 @@
         real :: n_conc = 0.     !mg/kg      |nitrogen concentration in channel bank
         real :: p_conc = 0.     !mg/kg      |phosphorus concentration in channel bank
         real :: p_bio = 0.      !frac       |fraction of p in bank that is bioavailable
-      end type channel_data
+        !! in addition to SWAT channel inputs
+        real :: sinu = 1.25     !           |SI <1.05: almost straight; 1.05 ≤ SI <1.25: winding
+                                                ! 1.25 ≤ SI <1.50: twisty; 1.50 ≤ SI: meandering
+        real :: fp_flo_fr = .1      !frac       |fraction of annual flow that flows through flood plain (0.03-0.15)
+        real :: fp_inun_days = 2.   !days       |average annual number of days the flood plain is inundated (9-15)
+        real :: q1_qm = 10.         !           |ratio of 1% daily flow to the mean daily flow (2-40)
+        real :: rcurv_exp = 1.2     !           |exponent (b) of the sediment rating curve (C=aQ^b)
+      end type channel_data1
       
       type channel1
         character(len=25) :: name = ""
         integer :: obj_no
         real :: area_ha
         real :: km
-        type (channel_data) :: chd
-        type (exco_del_ratios) :: bank_ero
-        type (exco_del_ratios) :: downcut
-        type (exco_del_ratios) :: dep
+        type (channel_data1) :: dat
       end type channel1
-      type (channel1), dimension(:), allocatable, target :: cha1
+      type (channel1), dimension(:), allocatable :: cha1
  
       type sd_ch_output
         real :: flo_in = 0.             !(m^3/s)       |average daily inflow rate during time step

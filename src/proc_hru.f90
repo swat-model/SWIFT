@@ -50,7 +50,7 @@
         !! if routing over an hru, input required data
         if (hru_db(i)%rout_over == "y") then
           do ipro = 1, 5
-            read (107,*,iostat=eof) hru_db(i)%rout_dr(ipro)
+            read (107,*,iostat=eof) hru_db2(i)%rout_dr(ipro)
           end do
         end if
         
@@ -66,14 +66,14 @@
         hru1(iob)%area_ha = ob(hru1(iob)%obj_no)%area_ha
         !! convert to m3, t, kg for routing
         do ipro = 1, 5
-          ob(iob)%hd(ipro)%flo = hru1(iob)%runoff(ipro)%flo * hru1(iob)%precip   
-          ob(iob)%hd(ipro)%sed = hru1(iob)%runoff(ipro)%sed * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%orgn = hru1(iob)%runoff(ipro)%orgn * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%sedp = hru1(iob)%runoff(ipro)%sedp * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%no3 = hru1(iob)%runoff(ipro)%no3 * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%solp = hru1(iob)%runoff(ipro)%solp * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%nh3 = hru1(iob)%runoff(ipro)%nh3 * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%no2 = hru1(iob)%runoff(ipro)%no2 * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%flo = hru2(iob)%runoff(ipro)%flo * hru1(iob)%precip   
+          ob(iob)%hd(ipro)%sed = hru2(iob)%runoff(ipro)%sed * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%orgn = hru2(iob)%runoff(ipro)%orgn * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%sedp = hru2(iob)%runoff(ipro)%sedp * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%no3 = hru2(iob)%runoff(ipro)%no3 * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%solp = hru2(iob)%runoff(ipro)%solp * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%nh3 = hru2(iob)%runoff(ipro)%nh3 * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%no2 = hru2(iob)%runoff(ipro)%no2 * hru1(iob)%area_ha
         end do
         
       end do

@@ -173,17 +173,6 @@
         real :: evol = 0.                   !m^3    |vol of water needed to fill the res to the emerg spillway (read in as ha-m and converted to m^3)
       end type wetland_data
 
-      type exco_del_ratios          !!if delivery ratio for routing, all units in fraction delivered
-        real :: flo = 0.            !! precip ratio     |volume of water
-        real :: sed = 0.            !! t/ha             |sediment
-        real :: orgn = 0.           !! kg N/ha          |organic N
-        real :: sedp = 0.           !! kg P/ha          |organic P
-        real :: no3 = 0.            !! kg N/ha          |NO3-N
-        real :: solp = 0.           !! kg P/ha          |mineral (soluble P)
-        real :: nh3 = 0.            !! kg N/ha          |NH3
-        real :: no2 = 0.            !! kg N/ha          |NO2
-      end type exco_del_ratios
-
       type hydrologic_response_unit1
         character(len=25) :: name = ""
         integer :: obj_no
@@ -195,8 +184,6 @@
         character(len=1) :: rout_over                       !"y" stores water; "n" does not store water
         real :: precip                                      !average annual precip
         type (wetland_data) :: wet                          !wetland/paddy data
-        type (exco_del_ratios), dimension (5) :: rout_dr     !routing deliveries - tot,surf,lat,tile
-        type (exco_del_ratios), dimension (5) :: runoff      !runoff leaving hru - tot,perc, surf,lat,tile
       end type hydrologic_response_unit1
       type (hydrologic_response_unit1), dimension(:), allocatable, target :: hru1
       type (hydrologic_response_unit1), dimension(:), allocatable, target :: hru_db

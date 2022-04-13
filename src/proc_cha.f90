@@ -28,7 +28,7 @@
         if (eof < 0) exit
         backspace (107)
         !! read from the aquifer database file named aquifer.aqu
-        read (107,*,iostat=eof) k, cha1(i)%name, cha1(i)%chd
+        read (107,*,iostat=eof) k, cha1(i)%dat
         if (eof < 0) exit
       end do
 

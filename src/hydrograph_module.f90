@@ -43,16 +43,38 @@
         real :: nh3 = 0.               !! kg N          |NH3
         real :: no2 = 0.               !! kg N          |NO2
       end type hyd_output
+      
+      type hru_exco_del_ratios
+        type (hyd_output), dimension (5) :: rout_dr    !routing deliveries - tot,perc,surf,lat,tile
+        type (hyd_output), dimension (5) :: runoff     !runoff leaving hru - tot,perc,surf,lat,tile
+      end type hru_exco_del_ratios
+      type (hru_exco_del_ratios), dimension(:), allocatable, target :: hru2
+      type (hru_exco_del_ratios), dimension(:), allocatable, target :: hru_db2
 
-      type aquifer1
-        character(len=25) :: name = ""
-        integer :: obj_no
-        real :: area_ha
-        real :: km
-        type (hyd_output) :: trap
-      end type aquifer1
-      type (aquifer1), dimension(:), allocatable, target :: aqu1
+      type cha_exco_del_ratios
+        type (hyd_output) :: bank_ero          !bank erosion
+        type (hyd_output) :: bed_ero           !bed erosion
+        type (hyd_output) :: ch_route          !in channel routing losses
+        type (hyd_output) :: fp_dep            !flood plain deposition
+      end type cha_exco_del_ratios
+      type (cha_exco_del_ratios), dimension(:), allocatable, target :: cha2
 
+      type res_exco_del_ratios
+        type (hyd_output) :: trap              !reservoir trapping
+      end type res_exco_del_ratios
+      type (res_exco_del_ratios), dimension(:), allocatable, target :: res2
+
+      type aqu_exco_del_ratios
+        type (hyd_output) :: trap              !aquifer gain/losses
+      end type aqu_exco_del_ratios
+      type (aqu_exco_del_ratios), dimension(:), allocatable, target :: aqu2
+
+      type exco_exco_del_ratios
+        type (hyd_output) :: load              !reservoir trapping
+      end type exco_exco_del_ratios
+      type (exco_exco_del_ratios), dimension(:), allocatable, target :: exco2
+
+      
       type (hyd_output), dimension(:),allocatable :: hd
       type (hyd_output), dimension(:), allocatable :: rec_d
       type (hyd_output), dimension(:), allocatable :: rec_m
