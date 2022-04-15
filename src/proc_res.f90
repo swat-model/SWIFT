@@ -1,7 +1,7 @@
       subroutine proc_res
      
       use reservoir_module1
-      use hydrograph_module, only : sp_ob
+      use hydrograph_module !, only : sp_ob
          
       implicit none
 
@@ -21,6 +21,7 @@
       read (107,*) titldum   !units
                   
       allocate (res1(sp_ob%res))
+      allocate (res2(sp_ob%res))
       
       !! read hru data
       do ires = 1, ires_db

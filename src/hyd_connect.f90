@@ -405,8 +405,8 @@
             do iob = 1, sp_ob%objs
               if (ob(iob)%fired == 0 .and. ob(iob)%rcv_tot > 0) then
                   kk=1
-                write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),  &
-                                    ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
+                !write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),  &
+                !                    ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
               end if 
             end do
             write (*,1002)
@@ -526,10 +526,10 @@
       do iob = 1, sp_ob%objs
         if (ob(iob)%typ /= "hru" .and. ob(iob)%typ /= "ru") then
         !!! write to diagnostics.out file
-          write (9001, *) iob, ob(iob)%typ, ob(iob)%num, ob(iob)%area_ha, ob(iob)%area_ha_calc,             &
-            ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj), ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj),             &
-            ob(iob)%frac_in(jj), &
-            ob(ob(iob)%obj_in(jj))%area_ha, ob(ob(iob)%obj_in(jj))%area_ha_calc, jj = 1, ob(iob)%rcv_tot)
+        !  write (9001, *) iob, ob(iob)%typ, ob(iob)%num, ob(iob)%area_ha, ob(iob)%area_ha_calc,             &
+        !    ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj), ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj),             &
+        !    ob(iob)%frac_in(jj), &
+        !    ob(ob(iob)%obj_in(jj))%area_ha, ob(ob(iob)%obj_in(jj))%area_ha_calc, jj = 1, ob(iob)%rcv_tot)
         !!! write to drareas.out file
           write (9002, *) iob, ob(iob)%typ, ob(iob)%num, ob(iob)%area_ha, ob(iob)%area_ha_calc,             &
             ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj), ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj),             &

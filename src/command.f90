@@ -192,6 +192,8 @@
             
           case ("outlet")  !outlet
             ob(icmd)%hd(1) = ob(icmd)%hin
+            write (1981, *) ob(icmd)%props, ob(icmd)%name, ob(icmd)%area_ha
+            write (1981, *) ' INFLOW    ', ob(iob)%hin
               
           case ("chandeg")  !swatdeg channel
             isdch = ob(icmd)%num
@@ -206,11 +208,11 @@
               
         !print all hydrographs
         do icmd = 1, sp_ob%objs
-          write (2560,*) ob(icmd)%name, ob(icmd)%typ, ob(icmd)%rcv_tot, ob(icmd)%src_tot
+          write (1983,*) ob(icmd)%name, ob(icmd)%typ, ob(icmd)%rcv_tot, ob(icmd)%src_tot
         
           !print all inflow hydrographs
           do iin = 1, ob(icmd)%rcv_tot
-             write (2560,*) "  in ", ob(icmd)%obtyp_in(iin), ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin),         &
+             write (1983,*) "  in ", ob(icmd)%obtyp_in(iin), ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin),         &
                ob(icmd)%frac_in(iin), ob(icmd)%hin_d(iin)
           end do
              
@@ -218,7 +220,7 @@
           do iout = 1, ob(icmd)%src_tot
             ihtyp = ob(icmd)%ihtyp_out(iout)
             ht1 = ob(icmd)%frac_out(iout) * ob(icmd)%hd(ihtyp)
-            write (2560,*) "  out ", ob(icmd)%obtyp_out(iout), ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),   &
+            write (1983,*) "  out ", ob(icmd)%obtyp_out(iout), ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),   &
               ob(icmd)%frac_out(iout), ht1
           end do
         end do

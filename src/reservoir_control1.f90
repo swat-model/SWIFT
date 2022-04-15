@@ -18,6 +18,7 @@
       
       ires = ob(iob)%num
       ires_db = ob(iob)%props
+      res1(ires)%area_ha = ob(iob)%area_ha
             
       !! calculate Brune trap efficiency (deposition)
       if (ob(iob)%hin%flo > 1.) then
@@ -28,7 +29,11 @@
       end if
       
       !! flow and constituents leaving reservoir
-      ob(iob)%hd(1) = trap_eff * ob(iob)%hin
+      ob(iob)%hd(1) = (1. - trap_eff) * ob(iob)%hin
+      
+      write (1977, *) ires, res1(ires)%name, res1(ires)%area_ha
+      write (1977, *) ' INFLOW    ', ob(iob)%hin
+      write (1977, *) ' OUTFLOW   ', ob(iob)%hd(1)
       
       return
       end subroutine reservoir_control1

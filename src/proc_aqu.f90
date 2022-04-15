@@ -1,6 +1,7 @@
       subroutine proc_aqu
     
-      use hydrograph_module, only : sp_ob, aqu1
+      use aquifer_module1
+      use hydrograph_module, only : sp_ob, aqu2
          
       implicit none
 
@@ -20,6 +21,7 @@
       read (107,*) titldum   !units
             
       allocate (aqu1(sp_ob%aqu))
+      allocate (aqu2(sp_ob%aqu))
       
       !! read hru data
       do iaqu = 1, iaqu_db
@@ -27,7 +29,7 @@
         if (eof < 0) exit
         backspace (107)
         !! read from the aquifer database file named aquifer.aqu
-        read (107,*,iostat=eof) k, aqu1(i)%name, aqu1(i)%trap
+        read (107,*,iostat=eof) k, aqu1(i)%name, aqu2(i)%trap
         if (eof < 0) exit
       end do
 

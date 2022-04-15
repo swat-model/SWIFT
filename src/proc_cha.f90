@@ -1,7 +1,7 @@
       subroutine proc_cha
     
       use channel_module1
-      use hydrograph_module, only : sp_ob
+      use hydrograph_module  !, only : sp_ob
          
       implicit none
 
@@ -21,6 +21,7 @@
       read (107,*) titldum   !units
       
       allocate (cha1(sp_ob%chandeg))
+      allocate (cha2(sp_ob%chandeg))
       
       !! read hru data
       do icha = 1, icha_db

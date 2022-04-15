@@ -2,7 +2,7 @@
     
       use hru_module1
       use climate_module1
-      use hydrograph_module, only : sp_ob, sp_ob1, ob
+      use hydrograph_module, only : sp_ob, sp_ob1, ob, hru2, hru_db2
     
       implicit none
       
@@ -16,6 +16,7 @@
       character (len=80) :: titldum   !           |title of file
       
       allocate (hru1(sp_ob%hru))
+      allocate (hru2(sp_ob%hru))
 
       !! read hru.dat
       open (107,file = "hru.dat",recl=1200)
@@ -25,6 +26,7 @@
       read (107,*) titldum   !units
       
       allocate (hru_db(ihru_db))
+      allocate (hru_db2(ihru_db))
       
       !! read hru data
       do ihru = 1, ihru_db
@@ -40,7 +42,7 @@
         if (hru_db(i)%surf_stor == "n") then
           !! read loadings from each process 
           do ipro = 1, 5
-            read (107,*,iostat=eof) hru_db(i)%runoff(ipro)
+            read (107,*,iostat=eof) hru_db2(i)%runoff(ipro)
           end do
         else
           !! read impoundment parameters for wetlands/rice
@@ -66,14 +68,14 @@
         hru1(iob)%area_ha = ob(hru1(iob)%obj_no)%area_ha
         !! convert to m3, t, kg for routing
         do ipro = 1, 5
-          ob(iob)%hd(ipro)%flo = hru2(iob)%runoff(ipro)%flo * hru1(iob)%precip   
-          ob(iob)%hd(ipro)%sed = hru2(iob)%runoff(ipro)%sed * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%orgn = hru2(iob)%runoff(ipro)%orgn * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%sedp = hru2(iob)%runoff(ipro)%sedp * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%no3 = hru2(iob)%runoff(ipro)%no3 * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%solp = hru2(iob)%runoff(ipro)%solp * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%nh3 = hru2(iob)%runoff(ipro)%nh3 * hru1(iob)%area_ha
-          ob(iob)%hd(ipro)%no2 = hru2(iob)%runoff(ipro)%no2 * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%flo = hru_db2(ihru)%runoff(ipro)%flo * hru1(iob)%precip   
+          ob(iob)%hd(ipro)%sed = hru_db2(ihru)%runoff(ipro)%sed * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%orgn = hru_db2(ihru)%runoff(ipro)%orgn * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%sedp = hru_db2(ihru)%runoff(ipro)%sedp * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%no3 = hru_db2(ihru)%runoff(ipro)%no3 * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%solp = hru_db2(ihru)%runoff(ipro)%solp * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%nh3 = hru_db2(ihru)%runoff(ipro)%nh3 * hru1(iob)%area_ha
+          ob(iob)%hd(ipro)%no2 = hru_db2(ihru)%runoff(ipro)%no2 * hru1(iob)%area_ha
         end do
         
       end do

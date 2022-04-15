@@ -1,7 +1,7 @@
       subroutine exco_read
      
       use exco_module1
-      use hydrograph_module, only : sp_ob
+      use hydrograph_module  !, only : sp_ob, exco2
          
       implicit none
 
@@ -21,6 +21,7 @@
       read (107,*) titldum   !units
             
       allocate (exco1(sp_ob%exco))
+      allocate (exco2(sp_ob%exco))
       
       !! read hru data
       do iexco = 1, iexco_db
@@ -28,7 +29,7 @@
         if (eof < 0) exit
         backspace (107)
         !! read from the aquifer database file named aquifer.aqu
-        read (107,*,iostat=eof) k, exco1(i)%name, exco1(i)%load
+        read (107,*,iostat=eof) k, exco1(i)%name, exco2(i)%load
         if (eof < 0) exit
       end do
 
