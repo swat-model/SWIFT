@@ -7,10 +7,8 @@
 
       use hydrograph_module
       use input_file_module
-      use recall_module
       use organic_mineral_mass_module
       use constituent_mass_module
-      use ru_module
       
       implicit none
       
@@ -23,7 +21,7 @@
       character (len=3) :: iobtyp     !none       |object type
       character (len=3) :: ihtyp      !           |
       integer :: nspu                 !           |
-      !integer :: isp
+      integer :: iru
       integer :: cmdno                !           |
       integer :: idone                !           | 
       !integer :: hydno
@@ -135,12 +133,7 @@
       if (sp_ob%hru > 0) then
         call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, hd_tot%hru, 1)     
       end if
-      
-      !read connect file for hru_lte"s
-      if (sp_ob%hru_lte > 0) then
-        call hyd_read_connect(in_con%hruez_con, "hru_lte ", sp_ob1%hru_lte, sp_ob%hru_lte, hd_tot%hru_lte, 1) 
-      end if
-      
+
       !read connect file for routing units
       if (sp_ob%ru > 0) then
         call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, hd_tot%ru, 1)
@@ -161,13 +154,7 @@
       if (sp_ob%res > 0) then
         call hyd_read_connect(in_con%res_con, "res     ", sp_ob1%res, sp_ob%res, hd_tot%res, 1) 
       end if
-                
-      !read connect file for recalls
-      if (sp_ob%recall > 0) then
-        call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 1) 
-        call recall_read
-      end if
-                
+   
       !read connect file for export coefficients
       if (sp_ob%exco > 0) then
         call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 1) 
@@ -182,17 +169,6 @@
       !read connect file for outlet
       if (sp_ob%outlet > 0) then
         call hyd_read_connect(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, hd_tot%outlet, 1)
-      end if
-          
-      !read connect file for swat-deg channels
-      if (sp_ob%chandeg > 0) then
-        call hyd_read_connect(in_con%chandeg_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, 1)
-        
-      end if
-      
-      !read connect file for gwflow
-      if (sp_ob%gwflow > 0) then
-        call hyd_read_connect(in_con%gwflow_con, "gwflow  ", sp_ob1%gwflow, sp_ob%gwflow, hd_tot%gwflow, 1)
       end if
 
       !! for each hru or defining unit, set all subbasins that contain it 

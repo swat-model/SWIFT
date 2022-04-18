@@ -15,7 +15,6 @@
       
       implicit none
 
-      real, dimension(time%step) :: hyd_flo     !flow hydrograph
       integer :: in                   !              |
       integer :: iin                   !              |
       integer :: ielem                !              |  

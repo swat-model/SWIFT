@@ -27,10 +27,10 @@
       mcal = 0
             
     !! read landscape cataloging unit definitions for output (old subbasin output file)
-    inquire (file=in_regs%def_lsu, exist=i_exist)
-    if (i_exist .or. in_regs%def_lsu /= "null") then
+    inquire (file=in_lsu%def_lsu, exist=i_exist)
+    if (i_exist .or. in_lsu%def_lsu /= "null") then
       do
-        open (107,file=in_regs%def_lsu)
+        open (107,file=in_lsu%def_lsu)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) mlsu
@@ -82,10 +82,10 @@
     end if	  
 
       !!read data for each element in all landscape cataloging units
-      inquire (file=in_regs%ele_lsu, exist=i_exist)
-      if (i_exist .or. in_regs%ele_lsu /= "null") then
+      inquire (file=in_lsu%ele_lsu, exist=i_exist)
+      if (i_exist .or. in_lsu%ele_lsu /= "null") then
       do
-        open (107,file=in_regs%ele_lsu)
+        open (107,file=in_lsu%ele_lsu)
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header

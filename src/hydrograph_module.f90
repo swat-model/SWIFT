@@ -1,7 +1,5 @@
       module hydrograph_module
       
-      use time_module
-      
       implicit none
       
       integer :: mhyd                                                    !none          |max number of hydrographs
@@ -148,10 +146,6 @@
         type (hyd_output) :: hin_til                                        !inflow hydrograph for tile flow - sum of all tile inflow hyds
         type (hyd_output) :: hin_aqu                                        !inflow hydrograph for aquifer flow - sum of all aquifer inflow hyds
         type (hyd_output), dimension(:), allocatable :: hd                  !generated hydrograph (ie 1=tot, 2= recharge, 3=surf, etc)
-        type (hyd_output), dimension(:,:), allocatable :: ts                !subdaily hydrographs
-        real, dimension(:,:), allocatable :: uh                             !subdaily surface runoff unit hydrograph
-        real, dimension(:,:), allocatable :: hyd_flo                        !subdaily surface runoff hydrograph
-        real, dimension(:),allocatable :: tsin                              !inflow subdaily flow hydrograph
         type (hyd_output) :: supply                                         !water supply allocation
         real :: demand                                                      !water irrigation demand (ha-m)
         integer :: day_cur = 0                                              !current hydrograph day in ts
@@ -172,20 +166,6 @@
         integer, dimension(:), allocatable :: obj_subs                      !subbasins object number that contain this object
       end type object_connectivity
       type (object_connectivity), dimension(:), allocatable, save :: ob
- 
-      !recall hydrograph inputs
-      type recall_hydrograph_inputs
-        character (len=25) :: name
-        integer :: num = 0                    !number of elements
-        integer :: typ = -1                   !recall type - 0=subdaily, 1=day, 2=mon, 3=year
-        character(len=25) :: filename         !filename
-        !hd and hyd_flo units are in cms and mg/L
-        type (hyd_output), dimension (:,:), allocatable :: hd   !m3/s for flow  |input total hyd for daily, monthly, annual and exco
-        real, dimension (:,:), allocatable :: hyd_flo           !m3/s           |input total flow hyd only for subdaily recall
-        integer :: start_yr             !! start year of point source file
-        integer :: end_yr               !! end year of point source file
-      end type recall_hydrograph_inputs
-      type (recall_hydrograph_inputs),dimension(:),allocatable:: recall
 
       type spatial_objects
         integer :: objs = 0      !number of objects or 1st object command
