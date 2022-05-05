@@ -50,12 +50,19 @@
       type (hru_exco_del_ratios), dimension(:), allocatable, target :: hru_db2
 
       type cha_exco_del_ratios
-        type (hyd_output) :: bank_ero          !bank erosion
-        type (hyd_output) :: bed_ero           !bed erosion
-        type (hyd_output) :: ch_rout           !in channel routing losses
-        type (hyd_output) :: fp_dep            !flood plain deposition
+        type (hyd_output) :: bank_ero           !bank erosion
+        type (hyd_output) :: bed_ero            !bed erosion
+        type (hyd_output) :: ch_rout            !in channel routing losses
+        type (hyd_output) :: fp_dep             !flood plain deposition
+        type (hyd_output) :: instr_dr           !instream delivery ratios
       end type cha_exco_del_ratios
       type (cha_exco_del_ratios), dimension(:), allocatable, target :: cha2
+
+      type cha_instream_del_ratios
+        character(len=25) :: name = "default"
+        type (hyd_output) :: instr_dr           !instream delivery ratios
+      end type cha_instream_del_ratios
+      type (cha_instream_del_ratios), dimension(:), allocatable, target :: cha_dr
 
       type res_exco_del_ratios
         type (hyd_output) :: trap              !reservoir trapping

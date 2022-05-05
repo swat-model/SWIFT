@@ -23,7 +23,7 @@
       allocate (cha1(sp_ob%chandeg))
       allocate (cha2(sp_ob%chandeg))
       
-      !! read hru data
+      !! read channel data
       do icha = 1, icha_db
         read (107,*,iostat=eof) i
         if (eof < 0) exit
@@ -34,6 +34,37 @@
       end do
 
       close (107)
+       
+      !! read channel instream delivery data
+      open (107,file = "chan_dr.dat",recl=1200)
+      read (107,*) titldum   !title
+      read (107,*) icha_dbmx
+      read (107,*) titldum   !header
+      read (107,*) titldum   !units
       
+      allocate (cha_dr(icha_db))
+      
+      !! read hru data
+      do icha = 1, icha_dbmx
+        read (107,*,iostat=eof) i
+        if (eof < 0) exit
+        backspace (107)
+        !! read from the aquifer database file named aquifer.aqu
+        read (107,*,iostat=eof) k, cha_dr(i)
+        if (eof < 0) exit
+      end do
+      
+      !! crosswalk channel delivery ratio name with database name
+      do icha = 1, sp_ob%chandeg
+        do icha_db = 1, icha_dbmx
+          if (cha1(icha)%dat%name == cha_dr(icha_db)%name) then
+            cha1(icha)%dat%dr_db = icha_db
+            exit
+          end if
+        end do
+      end do
+      
+
+      close (107)
       return
       end subroutine proc_cha

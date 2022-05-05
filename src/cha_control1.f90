@@ -70,6 +70,9 @@
       cha2(icha)%bank_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
       cha2(icha)%bank_ero%nh3 = 0.
       cha2(icha)%bank_ero%no2 = 0.
+      
+      !! calculate instream losses
+      
 
       !! sediment leaving channel
       ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep - cha2(icha)%ch_rout

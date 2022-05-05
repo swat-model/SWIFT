@@ -5,6 +5,7 @@
       type channel_data1
         character(len=25) :: name
         character(len=16) :: order
+        character(len=25) :: instream_dr
         real :: chw = 0.        !m          |channel width
         real :: chd = 0.        !m          |channel depth
         real :: chs = 0.        !m/m        |channel slope
@@ -40,6 +41,7 @@
         integer :: obj_no
         real :: area_ha
         real :: km
+        integer :: dr_db
         type (channel_data1) :: dat
       end type channel1
       type (channel1), dimension(:), allocatable :: cha1
