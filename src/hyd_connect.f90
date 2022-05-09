@@ -149,7 +149,12 @@
       if (sp_ob%chan > 0) then
         call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, hd_tot%chan, 1)
       end if
-                                  
+                       
+      !read connect file for swat-deg channels
+      if (sp_ob%chandeg > 0) then
+        call hyd_read_connect(in_con%chan_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, 1)
+      end if
+                           
       !read connect file for reservoirs
       if (sp_ob%res > 0) then
         call hyd_read_connect(in_con%res_con, "res     ", sp_ob1%res, sp_ob%res, hd_tot%res, 1) 

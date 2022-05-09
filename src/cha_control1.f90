@@ -12,6 +12,7 @@
       integer,  intent (in) :: iob
       integer :: icha                   !none       |channel number
       integer :: icha_db                !none       |channel data pointer
+      integer :: idr                    !none       |pointer to instream delivery ratio
       real :: trap_eff                  !frac       |sediment flood plain trap efficiency
       real :: dep_fr                    !frac       |fraction of sediment entering the flood plain that is deposited
       real :: fp_sed                    !frac       |annual sediment in flood plain flow
@@ -43,7 +44,8 @@
       
       !! calculate in channel depsosition and losses -  input delivery ratio
       ch_flo = 1. - cha1(icha)%dat%fp_flo_fr
-      cha2(icha)%ch_rout = 0.05 * ch_flo * ob(iob)%hin   !need to multiply by dr (not 0.5 - need input)
+      idr = cha1(icha)%dr_db
+      cha2(icha)%ch_rout = cha_dr(idr)%instr_dr ** (ch_flo * ob(iob)%hin)
       
       !! calculate bank erosion
       rad_curv = (11.26 * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
@@ -70,9 +72,6 @@
       cha2(icha)%bank_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
       cha2(icha)%bank_ero%nh3 = 0.
       cha2(icha)%bank_ero%no2 = 0.
-      
-      !! calculate instream losses
-      
 
       !! sediment leaving channel
       ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep - cha2(icha)%ch_rout

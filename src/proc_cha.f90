@@ -11,6 +11,7 @@
       integer :: icha                 !             |channel counter
       integer :: i                    !none         |counter
       integer :: k                    !none         |counter
+      integer :: icha_dbmx
       
       eof = 0
       
@@ -42,14 +43,14 @@
       read (107,*) titldum   !header
       read (107,*) titldum   !units
       
-      allocate (cha_dr(icha_db))
+      allocate (cha_dr(icha_dbmx))
       
       !! read hru data
       do icha = 1, icha_dbmx
         read (107,*,iostat=eof) i
         if (eof < 0) exit
         backspace (107)
-        !! read from the aquifer database file named aquifer.aqu
+        !! read from the channel delivery ratio file
         read (107,*,iostat=eof) k, cha_dr(i)
         if (eof < 0) exit
       end do
@@ -57,8 +58,8 @@
       !! crosswalk channel delivery ratio name with database name
       do icha = 1, sp_ob%chandeg
         do icha_db = 1, icha_dbmx
-          if (cha1(icha)%dat%name == cha_dr(icha_db)%name) then
-            cha1(icha)%dat%dr_db = icha_db
+          if (cha1(icha)%dat%instream_dr == cha_dr(icha_db)%name) then
+            cha1(icha)%dr_db = icha_db
             exit
           end if
         end do
