@@ -2,6 +2,7 @@
     
       use channel_module1
       use hydrograph_module  !, only : sp_ob
+      use input_file_module
          
       implicit none
 
@@ -15,9 +16,8 @@
       
       eof = 0
       
-      open (107,file = "chan.dat",recl=1200)
+      open (107,file = in_cha%cha_dat,recl=1200)
       read (107,*) titldum   !title
-      read (107,*) icha_db
       read (107,*) titldum   !header
       read (107,*) titldum   !units
       
@@ -26,22 +26,29 @@
       
       !! read channel data
       do icha = 1, icha_db
-        read (107,*,iostat=eof) i
-        if (eof < 0) exit
-        backspace (107)
         !! read from the aquifer database file named aquifer.aqu
-        read (107,*,iostat=eof) k, cha1(i)%dat
+        read (107,*,iostat=eof) cha1(i)%dat
         if (eof < 0) exit
       end do
 
       close (107)
        
+      !! xwalk with name in connect file
+      do icha = 1, sp_ob%chandeg
+        do icha_db = 1, sp_ob%chandeg
+          if (cha1(icha)%dat%instream_dr == cha_dr(icha_db)%name) then
+            cha1(icha)%dr_db = icha_db
+            exit
+          end if
+        end do
+      end do
+      
       !! read channel instream delivery data
-      open (107,file = "chan_dr.dat",recl=1200)
+      open (107,file = in_cha%cha_dr,recl=1200)
       read (107,*) titldum   !title
       read (107,*) icha_dbmx
       read (107,*) titldum   !header
-      read (107,*) titldum   !units
+      !read (107,*) titldum   !units
       
       allocate (cha_dr(icha_dbmx))
       

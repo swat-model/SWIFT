@@ -74,6 +74,8 @@
       end type aqu_exco_del_ratios
       type (aqu_exco_del_ratios), dimension(:), allocatable, target :: aqu2
 
+      type (hyd_output), dimension(:), allocatable, target :: recall        !treatment/industrial, gage data, or model output
+      
       type exco_exco_del_ratios
         type (hyd_output) :: load              !reservoir trapping
       end type exco_exco_del_ratios

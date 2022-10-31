@@ -3,18 +3,17 @@
       implicit none
 
       type channel_data1
-        character(len=25) :: name
+        character(len=16) :: name
         character(len=16) :: order
-        character(len=25) :: instream_dr
         real :: chw = 0.        !m          |channel width
         real :: chd = 0.        !m          |channel depth
         real :: chs = 0.        !m/m        |channel slope
         real :: chl = 0.        !km         |channel length
         real :: chn = 0.        !           |channel Manning's n
-        real :: wd_yr = 0.      !frac       |baseline widths per year of erosion
+        real :: chk = 0.        !mm/h       |channel bottom conductivity
         real :: cherod = 0.     !           |channel erodibility
         real :: cov = 0.        !0-1        |channel cover factor
-        real :: wd_rto = 0.     !0.5-100    |width depth ratio
+        real :: sinu            !none       |sinuousity - ratio of channel length and straight line length
         real :: chseq = 0.      !m/m        |equilibrium channel slope
         real :: d50 = 0.        !mm         |channel median sediment size
         real :: ch_clay = 0.    !%          |clay percent of bank and bed
@@ -22,18 +21,11 @@
         real :: ch_bd = 0.      !t/m3       |dry bulk density
         real :: chss = 0.       !           |channel side slope
         real :: bedldcoef = 0.  !           |percent of sediment entering the channel that is bed material
-        real :: fps = 0.        !m/m        |flood plain slope
-        real :: fpn = 0.        !           |flood plain Manning's n
+        real :: fps = 0.000001  !m/m        |flood plain slope
+        real :: fpn = 0.1       !           |flood plain Manning's n
         real :: n_conc = 0.     !mg/kg      |nitrogen concentration in channel bank
         real :: p_conc = 0.     !mg/kg      |phosphorus concentration in channel bank
         real :: p_bio = 0.      !frac       |fraction of p in bank that is bioavailable
-        !! in addition to SWAT channel inputs
-        real :: sinu = 1.25     !           |SI <1.05: almost straight; 1.05 ≤ SI <1.25: winding
-                                                ! 1.25 ≤ SI <1.50: twisty; 1.50 ≤ SI: meandering
-        real :: fp_flo_fr = .1      !frac       |fraction of annual flow that flows through flood plain (0.03-0.15)
-        real :: fp_inun_days = 2.   !days       |average annual number of days the flood plain is inundated (9-15)
-        real :: q1_qm = 10.         !           |ratio of 1% daily flow to the mean daily flow (2-40)
-        real :: rcurv_exp = 1.2     !           |exponent (b) of the sediment rating curve (C=aQ^b)
       end type channel_data1
       
       type channel1

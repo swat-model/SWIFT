@@ -10,9 +10,9 @@
        eof = 0
        
        !! read file.cio
-       inquire (file="file.cio", exist=i_exist)
+       inquire (file="file_cio.swf", exist=i_exist)
        if (i_exist ) then
-         open (107,file="file.cio")
+         open (107,file="file_cio.swf")
          read (107,*) titldum
        do i = 1, 31
          read (107,*,iostat=eof) name, in_basin
@@ -29,9 +29,7 @@
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_hru
          if (eof < 0) exit
-         read (107,*,iostat=eof) name, in_exco
-         if (eof < 0) exit
-         read (107,*,iostat=eof) name, in_delr
+         read (107,*,iostat=eof) name, in_rec
          if (eof < 0) exit
          read (107,*,iostat=eof) name, in_aqu
          if (eof < 0) exit

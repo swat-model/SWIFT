@@ -178,7 +178,11 @@
             if (ob(icmd)%rcv_tot > 0) then
               call reservoir_control1 (icmd)
             end if 
-
+  
+          case ("recall")   ! recall hydrograph
+            irec = ob(icmd)%num
+            ob(icmd)%hd(1) = recall(irec)
+                
           !case ("exco")   ! export coefficient hyds are set at start
 
           case ("dr")   ! delivery ratios

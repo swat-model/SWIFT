@@ -17,8 +17,8 @@
       
       ihru = ob(iob)%props
       
-      write (1980, *) ihru, hru1(ihru)%name, hru1(ihru)%area_ha, hru1(ihru)%lum, hru1(ihru)%soil,   &
-                             hru1(ihru)%surf_stor, hru1(ihru)%rout_over
+      write (1980, *) ihru, hru1(ihru)%name, hru1(ihru)%area_ha, hru1(iob)%precip, hru1(ihru)%lum, &
+                             hru1(ihru)%soil, hru1(ihru)%surf_stor, hru1(ihru)%rout_over
       
       !! if no routing or wetland, ob()%hd(:) is set from the inputs
       if (hru1(ihru)%rout_over == "n") then

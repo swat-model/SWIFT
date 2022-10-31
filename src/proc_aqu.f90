@@ -2,6 +2,7 @@
     
       use aquifer_module1
       use hydrograph_module, only : sp_ob, aqu2
+      use input_file_module
          
       implicit none
 
@@ -14,7 +15,7 @@
       
       eof = 0
       
-      open (107,file = "aqu.dat",recl=1200)
+      open (107,file = in_aqu%aqu_dat,recl=1200)
       read (107,*) titldum   !title
       read (107,*) iaqu_db
       read (107,*) titldum   !header

@@ -2,6 +2,7 @@
      
       use reservoir_module1
       use hydrograph_module !, only : sp_ob
+      use input_file_module
          
       implicit none
 
@@ -14,7 +15,7 @@
       
       eof = 0
       
-      open (107,file = "res.dat",recl=1200)
+      open (107,file = in_res%res_dat,recl=1200)
       read (107,*) titldum   !title
       read (107,*) ires_db
       read (107,*) titldum   !header

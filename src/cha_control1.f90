@@ -31,7 +31,8 @@
       icha_db = ob(iob)%props
             
       !! calculate flood plain deposition and losses
-      !! calculate sediment concntration at bankfull (Q1) using sediment rating curve exp
+      !! calculate sediment concentration at bankfull (Q1) using sediment rating curve exp
+      cha1(icha)%dat%q1_qm = 4.
       fp_sed = (cha1(icha)%dat%q1_qm) ** cha1(icha)%dat%rcurv_exp
       !! fraction overbank sediment deposited - based on fall velocity and days inundated
       trap_eff = 1.2 * exp(-0.424 * cha1(icha)%dat%fp_inun_days)
@@ -74,7 +75,7 @@
       cha2(icha)%bank_ero%no2 = 0.
 
       !! sediment leaving channel
-      ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep - cha2(icha)%ch_rout
+      ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep
          
       write (1979, *) icha, cha1(icha)%name, cha1(icha)%area_ha
       write (1979, *) ' INFLOW    ', ob(iob)%hin

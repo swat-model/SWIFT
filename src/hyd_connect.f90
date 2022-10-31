@@ -161,15 +161,15 @@
       end if
    
       !read connect file for export coefficients
-      if (sp_ob%exco > 0) then
-        call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 1) 
-      endif
+      !if (sp_ob%exco > 0) then
+      !  call hyd_read_connect(in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 1) 
+      !endif
                   
       !read connect file for delivery ratio
-      if (sp_ob%dr > 0) then
-        call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 1) 
-        call dr_db_read
-      end if
+      !if (sp_ob%dr > 0) then
+      !  call hyd_read_connect(in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 1) 
+      !  call dr_db_read
+      !end if
                   
       !read connect file for outlet
       if (sp_ob%outlet > 0) then
@@ -380,24 +380,20 @@
     do while (idone == 0)
         do i = 1, sp_ob%objs
         
-        if (iord > 1000) then
-          if (ob(i)%fired == 0) then         
-
-            do iob = 1, sp_ob%objs
-              if (ob(iob)%fired == 0 .and. ob(iob)%rcv_tot > 0) then
-                  kk=1
-                !write (9001, *) iob, ob(iob)%fired, ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),  &
-                !                    ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj), jj = 1, ob(iob)%rcv_tot)
-              end if 
-            end do
-            write (*,1002)
-            !pause   !!! stop the simulation run (ob(i)%fired == 0)
-            !stop
-            call exit(1)
-          end if
+        if (iord > 1000) then        
+          open (9002,file="looping.con",recl = 1500)
+          write (9002, *) "LOOPING.CON CHECKING INFINITE LOOPS"
+          do iob = 1, sp_ob%objs
+            if (ob(iob)%fired == 0 .and. ob(iob)%rcv_tot > 0) then
+              kk=1
+              write (9002, *) ob(iob)%typ, ob(iob)%num, ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj),  &
+                                    ob(iob)%obtypno_in(jj), jj = 1, ob(iob)%rcv_tot)
+            end if 
+          end do
+          write (*,1002)
+          call exit(1)
         end if 
    
-      
           !check if all incoming and defining objects have been met
           !if not sum incoming 
           if (rcv_sum(i) == ob(i)%rcv_tot .and.                        & 

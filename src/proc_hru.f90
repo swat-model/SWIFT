@@ -3,6 +3,7 @@
       use hru_module1
       use climate_module1
       use hydrograph_module, only : sp_ob, sp_ob1, ob, hru2, hru_db2
+      use input_file_module
     
       implicit none
       
@@ -19,7 +20,7 @@
       allocate (hru2(sp_ob%hru))
 
       !! read hru.dat
-      open (107,file = "hru.dat",recl=1200)
+      open (107,file = in_hru%hru_data,recl=1200)
       read (107,*) titldum
       read (107,*) ihru_db
       read (107,*) titldum   !header

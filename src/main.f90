@@ -30,7 +30,7 @@
       call lsu_read_elements        !defining landscape units by hru
 
       call cli_pmeas
-      call exco_read
+      call recall_read
       call proc_hru
       call proc_ru
       call proc_cha

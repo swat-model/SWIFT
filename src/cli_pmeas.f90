@@ -13,7 +13,7 @@
       
       eof = 0
       
-      open (107,file = "precip.dat",recl=1200)
+      open (107,file = "precip.swf",recl=1200)
       read (107,*) titldum      !title
       read (107,*) iprecip_db
       read (107,*) titldum      !header

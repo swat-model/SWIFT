@@ -24,8 +24,7 @@
        character(len=25) :: aqu_con = "aquifer.con"
        character(len=25) :: chan_con = "channel.con"
        character(len=25) :: res_con = "reservoir.con"
-       character(len=25) :: exco_con = "exco.con"
-       character(len=25) :: delr_con = "delratio.con"
+       character(len=25) :: rec_con = "exco.con"
        character(len=25) :: out_con = "outlet.con"
       end type input_con
       type (input_con) :: in_con
@@ -33,6 +32,7 @@
 !! channel
       type input_cha 
        character(len=25) :: cha_dat = "chan.dat"
+       character(len=25) :: cha_dr = "chan.dat"
       end type input_cha
       type (input_cha) :: in_cha
 
@@ -55,27 +55,11 @@
       end type input_hru
       type (input_hru) :: in_hru
 	  	  
-!! exco (recall constant)
-      type input_exco
-       character(len=25) :: exco = "exco.exc"
-       character(len=25) :: om = "exco_om.exc"
-       character(len=25) :: pest = "exco_pest.exc"
-       character(len=25) :: path = "exco_path.exc"
-       character(len=25) :: hmet = "exco_hmet.exc"
-       character(len=25) :: salt = "exco_salt.exc"
-      end type input_exco
-      type (input_exco) :: in_exco
-
-!! delivery ratio
-      type input_delr
-       character(len=25) :: del_ratio = "delr.del"
-	   character(len=25) :: om = "dr_om.del"
-	   character(len=25) :: pest = "dr_pest.del"
-	   character(len=25) :: path = "dr_path.del"
-	   character(len=25) :: hmet = "dr_hmet.del"
-	   character(len=25) :: salt = "dr_salt.del"
-      end type input_delr
-      type (input_delr) :: in_delr
+!! recall (daily, monthly and annual)
+      type input_rec 
+       character(len=25) :: recall_rec = "recall.rec"
+      end type input_rec
+      type (input_rec) :: in_rec
 
 !! aquifer 
       type input_aqu
@@ -90,4 +74,26 @@
       end type input_lsu
       type (input_lsu) :: in_lsu
       
+!! exco (recall constant)
+      type input_exco
+       character(len=25) :: exco = "exco.exc"
+       character(len=25) :: om = "exco_om.exc"
+       character(len=25) :: pest = "exco_pest.exc"
+       character(len=25) :: path = "exco_path.exc"
+       character(len=25) :: hmet = "exco_hmet.exc"
+       character(len=25) :: salt = "exco_salt.exc"
+      end type input_exco
+      type (input_exco) :: in_exco
+	  
+!! delivery ratio
+      type input_delr
+       character(len=25) :: del_ratio = "delratio.del"
+	   character(len=25) :: om = "dr_om.del"
+	   character(len=25) :: pest = "dr_pest.del"
+	   character(len=25) :: path = "dr_path.del"
+	   character(len=25) :: hmet = "dr_hmet.del"
+	   character(len=25) :: salt = "dr_salt.del"
+      end type input_delr
+      type (input_delr) :: in_delr
+
       end module input_file_module 
