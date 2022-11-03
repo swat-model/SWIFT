@@ -177,17 +177,45 @@
         character(len=25) :: name = ""
         integer :: obj_no
         real :: area_ha
-        real :: km
-        character(len=25) :: lum                            !"y" stores water; "n" does not store water
-        character(len=25) :: soil                           !"y" stores water; "n" does not store water
-        character(len=1) :: surf_stor                       !"y" stores water; "n" does not store water
-        character(len=1) :: rout_over                       !"y" stores water; "n" does not store water
+        character(len=25) :: hsg                            !hydrologic soil group
+        character(len=1) :: bmp_eff                         !name of bmp efficiency - xwalk with data file
+        character(len=1) :: surf_stor                       !name of wetland - xwalk with surf_stor data file
+        character(len=1) :: rout_over                       !name of delivery ratio - xwalk with route over data file
+        integer :: ibmp
+        integer :: iwet
+        integer :: dr
         real :: precip                                      !average annual precip
         type (wetland_data) :: wet                          !wetland/paddy data
       end type hydrologic_response_unit1
       type (hydrologic_response_unit1), dimension(:), allocatable, target :: hru1
-      type (hydrologic_response_unit1), dimension(:), allocatable, target :: hru_db
       
+      type hydrologic_response_unit_mgt
+        integer :: obj_no
+        character(len=25) :: name = ""
+        integer :: id
+        character(len=50) :: landuse = ""
+        real :: stir
+        character(len=25) :: crop1
+        character(len=25) :: crop2
+        character(len=25) :: tillage
+        character(len=1) :: irrig
+        character(len=1) :: tiled
+        character(len=25) :: terrace
+        character(len=25) :: waterway
+        character(len=25) :: filter
+        character(len=1) :: contour
+        character(len=1) :: grade_stab
+        character(len=25) :: rip_buff
+        character(len=1) :: cover_crop
+        character(len=1) :: nut_mgt
+        real :: com_n
+        real :: com_p
+        real :: man_n
+        real :: man_p
+        type (wetland_data) :: desc
+      end type hydrologic_response_unit_mgt
+      type (hydrologic_response_unit_mgt), dimension(:), allocatable, target :: hru_mgt
+  
       type hydrologic_response_unit
         character(len=13) :: name = ""
         integer :: obj_no

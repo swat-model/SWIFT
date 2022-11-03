@@ -12,7 +12,6 @@
       integer :: icha                 !             |channel counter
       integer :: i                    !none         |counter
       integer :: k                    !none         |counter
-      integer :: icha_dbmx
       
       eof = 0
       
@@ -25,35 +24,28 @@
       allocate (cha2(sp_ob%chandeg))
       
       !! read channel data
-      do icha = 1, icha_db
+      do icha = 1, sp_ob%chandeg
+        read (107,*,iostat=eof) i
+        if (eof < 0) exit
+        backspace (107)
         !! read from the aquifer database file named aquifer.aqu
-        read (107,*,iostat=eof) cha1(i)%dat
+        read (107,*,iostat=eof) k, cha1(i)%dat
         if (eof < 0) exit
       end do
 
       close (107)
-       
-      !! xwalk with name in connect file
-      do icha = 1, sp_ob%chandeg
-        do icha_db = 1, sp_ob%chandeg
-          if (cha1(icha)%dat%instream_dr == cha_dr(icha_db)%name) then
-            cha1(icha)%dr_db = icha_db
-            exit
-          end if
-        end do
-      end do
-      
+
       !! read channel instream delivery data
       open (107,file = in_cha%cha_dr,recl=1200)
       read (107,*) titldum   !title
-      read (107,*) icha_dbmx
+      read (107,*) i
       read (107,*) titldum   !header
       !read (107,*) titldum   !units
       
-      allocate (cha_dr(icha_dbmx))
+      allocate (cha_dr(sp_ob%chandeg))
       
-      !! read hru data
-      do icha = 1, icha_dbmx
+      !! read channel delivery data
+      do icha = 1, sp_ob%chandeg
         read (107,*,iostat=eof) i
         if (eof < 0) exit
         backspace (107)
@@ -61,17 +53,6 @@
         read (107,*,iostat=eof) k, cha_dr(i)
         if (eof < 0) exit
       end do
-      
-      !! crosswalk channel delivery ratio name with database name
-      do icha = 1, sp_ob%chandeg
-        do icha_db = 1, icha_dbmx
-          if (cha1(icha)%dat%instream_dr == cha_dr(icha_db)%name) then
-            cha1(icha)%dr_db = icha_db
-            exit
-          end if
-        end do
-      end do
-      
 
       close (107)
       return

@@ -48,6 +48,24 @@
       end type hru_exco_del_ratios
       type (hru_exco_del_ratios), dimension(:), allocatable, target :: hru2
       type (hru_exco_del_ratios), dimension(:), allocatable, target :: hru_db2
+      
+      !! hru export coefficients - dimension to number of hrus
+      type hru_export_coefficients
+        type (hyd_output), dimension (5) :: runoff      !export coefficients - tot,perc,surf,lat,tile
+      end type hru_export_coefficients
+      type (hru_export_coefficients), dimension(:), allocatable, target :: hru_ex
+
+      !! hru bmp efficiencies - dimension to number in data file
+      type hru_bmp_efficiencies
+        type (hyd_output), dimension (5) :: bmp         !bmp efficiencies - tot,perc,surf,lat,tile
+      end type hru_bmp_efficiencies
+      type (hru_bmp_efficiencies), dimension(:), allocatable, target :: hru_bmp
+      
+      !! hru delivery ratios when routing across the hru - dimension to number in data file
+      type hru_delivery_ratios
+        type (hyd_output), dimension (5) :: dr          !delivery ratios - tot,perc,surf,lat,tile
+      end type hru_delivery_ratios
+      type (hru_delivery_ratios), dimension(:), allocatable, target :: hru_dr
 
       type cha_exco_del_ratios
         type (hyd_output) :: bank_ero           !bank erosion
