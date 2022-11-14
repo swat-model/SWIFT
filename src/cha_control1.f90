@@ -33,20 +33,19 @@
       !! calculate flood plain deposition and losses
       !! calculate sediment concentration at bankfull (Q1) using sediment rating curve exp
       !cha1(icha)%dat%q1_qm = 4.
-      !fp_sed = (cha1(icha)%dat%q1_qm) ** cha1(icha)%dat%rcurv_exp
+      fp_sed = (cha1(icha)%sed%q1_qm) ** cha1(icha)%sed%rcurv_exp
       !! fraction overbank sediment deposited - based on fall velocity and days inundated
-      !trap_eff = 1.2 * exp(-0.424 * cha1(icha)%dat%fp_inun_days)
+      trap_eff = 1.2 * exp(-0.424 * cha1(icha)%sed%fp_inun_days)
       !! calculate deposition and outflow
-      !dep_fr = cha1(icha)%dat%fp_flo_fr * fp_sed * trap_eff
+      dep_fr = cha1(icha)%sed%fp_flo_fr * fp_sed * trap_eff
       dep_fr = amax1(0., dep_fr)
       dep_fr = amin1(1., dep_fr)
       cha2(icha)%fp_dep = dep_fr * ob(iob)%hin
-      !ob(iob)%hd(1) = ob(iob)%hin - cha2(icha)%fp_dep 
+      ob(iob)%hd(1) = ob(iob)%hin - cha2(icha)%fp_dep 
       
       !! calculate in channel depsosition and losses -  input delivery ratio
-      !ch_flo = 1. - cha1(icha)%dat%fp_flo_fr
-      idr = cha1(icha)%dr_db
-      cha2(icha)%ch_rout = cha_dr(idr)%instr_dr ** (ch_flo * ob(iob)%hin)
+      ch_flo = 1. - cha1(icha)%sed%fp_flo_fr
+      cha2(icha)%ch_rout = cha_dr(icha)%instr_dr ** (ch_flo * ob(iob)%hin)
       
       !! calculate bank erosion
       rad_curv = (11.26 * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
@@ -55,7 +54,7 @@
       bank_te = 0.75 * bed_te
       t_crit = 0.498 * 10 ** (0.0182 * cha1(icha)%dat%ch_clay)
       rc_fac = 3.62 * (rad_curv * cha1(icha)%dat%chw) ** -0.5234
-      !bank_kd = (cha1(icha)%dat%chw * cha1(icha)%dat%wd_yr) / (bank_te / t_crit - 1.)
+      bank_kd = (cha1(icha)%dat%chw * cha1(icha)%sed%wd_yr) / (bank_te / t_crit - 1.)
       bank_kd = amax1(0., bank_kd)
       if (cha1(icha)%dat%chd > 2.) then
         cov_fac = 0.001

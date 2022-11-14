@@ -22,7 +22,6 @@
       read (107,*) titldum   !units
                   
       allocate (res1(sp_ob%res))
-      allocate (res2(sp_ob%res))
       
       !! read hru data
       do ires = 1, ires_db

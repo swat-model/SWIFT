@@ -39,13 +39,8 @@
         if (eof < 0) exit
         
         !allocate subbasin (landscape unit) inputs and outputs
-        allocate (lsu_out(0:mlsu))
-                
-        !allocate subbasin (landscape unit) inputs and outputs
-        allocate (ruwb_d(0:mlsu)); allocate (ruwb_m(0:mlsu)); allocate (ruwb_y(0:mlsu)); allocate (ruwb_a(0:mlsu))
-        allocate (runb_d(0:mlsu)); allocate (runb_m(0:mlsu)); allocate (runb_y(0:mlsu)); allocate (runb_a(0:mlsu))
-        allocate (ruls_d(0:mlsu)); allocate (ruls_m(0:mlsu)); allocate (ruls_y(0:mlsu)); allocate (ruls_a(0:mlsu))
-        allocate (rupw_d(0:mlsu)); allocate (rupw_m(0:mlsu)); allocate (rupw_y(0:mlsu)); allocate (rupw_a(0:mlsu))
+        allocate (lsu_out(mlsu))
+        allocate (lsu_ex(mlsu))
         
       do i = 1, mlsu
 
@@ -58,7 +53,6 @@
           if (eof < 0) exit
 
           call define_unit_elements (nspu, ielem1)
-          
           allocate (lsu_out(i)%num(ielem1))
           lsu_out(i)%num = defunit_num
           lsu_out(i)%num_tot = ielem1

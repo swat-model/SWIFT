@@ -28,6 +28,16 @@
         real :: p_bio = 0.      !frac       |fraction of p in bank that is bioavailable
       end type channel_data1
       
+      type channel_sediment_data
+        character(len=16) :: name
+        real :: q1_qm = 4.          !ratio      |ratio of 1% flow to mean flow
+        real :: rcurv_exp = 1.2     !           |exponent coefficient for sediment rating curve adjustment for overbank concentration
+        real :: fp_inun_days = 3.   !days       |days of flood plain inundation per year
+        real :: fp_flo_fr = 0.05    !frac       |fraction of annual flow that goes overbank
+        real :: wd_yr = 0.3         !frac       |widths per year of channel widening
+        real :: ch_fp_w_rto = 3.    !ratio      |channel/flood plain width ratio
+      end type channel_sediment_data
+      
       type channel1
         character(len=25) :: name = ""
         integer :: obj_no
@@ -35,6 +45,7 @@
         real :: km
         integer :: dr_db
         type (channel_data1) :: dat
+        type (channel_sediment_data) :: sed
       end type channel1
       type (channel1), dimension(:), allocatable :: cha1
  

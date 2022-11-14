@@ -199,7 +199,8 @@
             write (1981, *) ' INFLOW    ', ob(iob)%hin
               
           case ("chandeg")  !swatdeg channel
-            isdch = ob(icmd)%num
+Pegbundy64!!!
+isdch = ob(icmd)%num
             isd_chsur = ob(icmd)%props2
             call cha_control1 (icmd)
           end select
@@ -227,6 +228,10 @@
               ob(icmd)%frac_out(iout), ht1
           end do
         end do
-
+        
+      call output_hru
+      call output_basin
+      call output_lsu
+      
       return
       end

@@ -42,30 +42,23 @@
         real :: no2 = 0.               !! kg N          |NO2
       end type hyd_output
       
-      type hru_exco_del_ratios
-        type (hyd_output), dimension (5) :: rout_dr    !routing deliveries - tot,perc,surf,lat,tile
-        type (hyd_output), dimension (5) :: runoff     !runoff leaving hru - tot,perc,surf,lat,tile
-      end type hru_exco_del_ratios
-      type (hru_exco_del_ratios), dimension(:), allocatable, target :: hru2
-      type (hru_exco_del_ratios), dimension(:), allocatable, target :: hru_db2
-      
       !! hru export coefficients - dimension to number of hrus
       type hru_export_coefficients
         type (hyd_output), dimension (5) :: runoff      !export coefficients - tot,perc,surf,lat,tile
       end type hru_export_coefficients
-      type (hru_export_coefficients), dimension(:), allocatable, target :: hru_ex
+      type (hru_export_coefficients), dimension(:), allocatable :: hru_ex
 
       !! hru bmp efficiencies - dimension to number in data file
       type hru_bmp_efficiencies
-        type (hyd_output), dimension (5) :: bmp         !bmp efficiencies - tot,perc,surf,lat,tile
+        type (hyd_output), dimension (5) :: eff         !bmp efficiencies - tot,perc,surf,lat,tile
       end type hru_bmp_efficiencies
-      type (hru_bmp_efficiencies), dimension(:), allocatable, target :: hru_bmp
+      type (hru_bmp_efficiencies), dimension(:), allocatable :: hru_bmp
       
       !! hru delivery ratios when routing across the hru - dimension to number in data file
       type hru_delivery_ratios
         type (hyd_output), dimension (5) :: dr          !delivery ratios - tot,perc,surf,lat,tile
       end type hru_delivery_ratios
-      type (hru_delivery_ratios), dimension(:), allocatable, target :: hru_dr
+      type (hru_delivery_ratios), dimension(:), allocatable :: hru_dr
 
       type cha_exco_del_ratios
         type (hyd_output) :: bank_ero           !bank erosion
@@ -74,33 +67,32 @@
         type (hyd_output) :: fp_dep             !flood plain deposition
         type (hyd_output) :: instr_dr           !instream delivery ratios
       end type cha_exco_del_ratios
-      type (cha_exco_del_ratios), dimension(:), allocatable, target :: cha2
+      type (cha_exco_del_ratios), dimension(:), allocatable :: cha2
 
       type cha_instream_del_ratios
         character(len=25) :: name = "default"
         type (hyd_output) :: instr_dr           !instream delivery ratios
       end type cha_instream_del_ratios
-      type (cha_instream_del_ratios), dimension(:), allocatable, target :: cha_dr
-
-      type res_exco_del_ratios
-        type (hyd_output) :: trap              !reservoir trapping
-      end type res_exco_del_ratios
-      type (res_exco_del_ratios), dimension(:), allocatable, target :: res2
+      type (cha_instream_del_ratios), dimension(:), allocatable :: cha_dr
 
       type aqu_exco_del_ratios
         type (hyd_output) :: trap              !aquifer gain/losses
       end type aqu_exco_del_ratios
-      type (aqu_exco_del_ratios), dimension(:), allocatable, target :: aqu2
+      type (aqu_exco_del_ratios), dimension(:), allocatable :: aqu2
 
-      type (hyd_output), dimension(:), allocatable, target :: recall        !treatment/industrial, gage data, or model output
+      type (hyd_output), dimension(:), allocatable :: recall        !treatment/industrial, gage data, or model output
       
-      type exco_exco_del_ratios
-        type (hyd_output) :: load              !reservoir trapping
-      end type exco_exco_del_ratios
-      type (exco_exco_del_ratios), dimension(:), allocatable, target :: exco2
+      type (hyd_output), dimension(5) :: bsn_out
+      
+      type lsu_deliveries
+        character(len=25) :: name = "default"
+        type (hyd_output), dimension(5) :: hyd           !instream delivery ratios
+      end type lsu_deliveries
+      type (lsu_deliveries), dimension(:), allocatable :: lsu_ex
+      
+      type (hyd_output), dimension(:), allocatable :: exco2
 
-      
-      type (hyd_output), dimension(:),allocatable :: hd
+      type (hyd_output), dimension(:), allocatable :: hd
       type (hyd_output), dimension(:), allocatable :: rec_d
       type (hyd_output), dimension(:), allocatable :: rec_m
       type (hyd_output), dimension(:), allocatable :: rec_y
@@ -331,6 +323,21 @@
         hyd1%nh3 = hyd1%nh3 * hyd1%flo / 1000.
         hyd1%no2 = hyd1%no2 * hyd1%flo / 1000.
       end subroutine hyd_convert_conc_to_mass
+      
+      !! function to convert mass to concentration
+      subroutine hyd_convert__mass_to_ha (hyd1, area_ha)
+        real, intent (in) :: area_ha
+        type (hyd_output), intent (inout) :: hyd1
+        ! m3 to mm
+        hyd1%flo = hyd1%flo / (area_ha * 10.)
+        hyd1%sed = hyd1%sed / area_ha
+        hyd1%orgn = hyd1%orgn / area_ha
+        hyd1%sedp = hyd1%sedp / area_ha
+        hyd1%no3 = hyd1%no3 / area_ha
+        hyd1%solp = hyd1%solp / area_ha
+        hyd1%nh3 = hyd1%nh3 / 1000.
+        hyd1%no2 = hyd1%no2 / 1000.
+      end subroutine hyd_convert__mass_to_ha
       
       !! function to convert concentration to mass
       subroutine res_convert_mass (hyd1, pvol)

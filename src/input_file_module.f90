@@ -7,6 +7,7 @@
 !! basin
       type input_basin
        character(len=25) :: object_cnt = "object.cnt"
+       character(len=25) :: object_prt = "object.prt"
        character(len=25) :: cs_db = "constituents.cs"
       end type input_basin
       type (input_basin) :: in_basin
@@ -31,14 +32,15 @@
 
 !! channel
       type input_cha 
-       character(len=25) :: cha_dat = "chan.dat"
-       character(len=25) :: cha_dr = "chan.dat"
+       character(len=25) :: cha_dat = "cha.dat"
+       character(len=25) :: cha_dr = "cha.dr"
       end type input_cha
       type (input_cha) :: in_cha
 
 !! reservoir
       type input_res
-       character(len=25) :: res_dat = "initial.res"
+       character(len=25) :: res_dat = "res.dat"
+       !character(len=25) :: res_dr = "res.dr"
       end type input_res
       type (input_res) :: in_res
 
@@ -51,7 +53,11 @@
 
 !! HRU
       type input_hru
-       character(len=25) :: hru_data = "hru.dat"
+       character(len=25) :: hru_dat = "hru.dat"
+       character(len=25) :: hru_exco = "hru.exco"
+       character(len=25) :: hru_wet = "hru.wet"
+       character(len=25) :: hru_bmp = "hru.bmp"
+       character(len=25) :: hru_dr = "hru.dr"
       end type input_hru
       type (input_hru) :: in_hru
 	  	  
@@ -69,8 +75,8 @@
            
 !! landscape units
       type input_lsu
-        character(len=25) :: ele_lsu = "ls_unit.ele"
         character(len=25) :: def_lsu = "ls_unit.def"
+        character(len=25) :: ele_lsu = "ls_unit.ele"
       end type input_lsu
       type (input_lsu) :: in_lsu
       

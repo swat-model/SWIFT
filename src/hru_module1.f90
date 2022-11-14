@@ -177,17 +177,17 @@
         character(len=25) :: name = ""
         integer :: obj_no
         real :: area_ha
-        character(len=25) :: hsg                            !hydrologic soil group
-        character(len=1) :: bmp_eff                         !name of bmp efficiency - xwalk with data file
-        character(len=1) :: surf_stor                       !name of wetland - xwalk with surf_stor data file
-        character(len=1) :: rout_over                       !name of delivery ratio - xwalk with route over data file
-        integer :: ibmp
-        integer :: iwet
-        integer :: dr
-        real :: precip                                      !average annual precip
-        type (wetland_data) :: wet                          !wetland/paddy data
+        character(len=35) :: lum                !land use
+        real :: slope                           !slope m/m
+        character(len=25) :: hsg                !hydrologic soil group
+        character(len=1) :: surf_stor           !surface storage (rice/wetland) - y/n
+        character(len=1) :: bmp                 !bmp efficiencies - y/n
+        character(len=1) :: dr                  !delivery routing over the hru - y/n
+        real :: precip                          !average annual precip
+        real :: pet                             !average annual potential ET
+        type (wetland_data) :: wet              !wetland/paddy data
       end type hydrologic_response_unit1
-      type (hydrologic_response_unit1), dimension(:), allocatable, target :: hru1
+      type (hydrologic_response_unit1), dimension(:), allocatable, target :: hru_dat
       
       type hydrologic_response_unit_mgt
         integer :: obj_no
