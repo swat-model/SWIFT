@@ -40,7 +40,7 @@
 !! reservoir
       type input_res
        character(len=25) :: res_dat = "res.dat"
-       !character(len=25) :: res_dr = "res.dr"
+       character(len=25) :: res_dr = "res.dr"
       end type input_res
       type (input_res) :: in_res
 

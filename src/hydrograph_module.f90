@@ -63,6 +63,7 @@
       type cha_exco_del_ratios
         type (hyd_output) :: bank_ero           !bank erosion
         type (hyd_output) :: bed_ero            !bed erosion
+        type (hyd_output) :: bed_dep            !bed erosion
         type (hyd_output) :: ch_rout            !in channel routing losses
         type (hyd_output) :: fp_dep             !flood plain deposition
         type (hyd_output) :: instr_dr           !instream delivery ratios
@@ -74,6 +75,12 @@
         type (hyd_output) :: instr_dr           !instream delivery ratios
       end type cha_instream_del_ratios
       type (cha_instream_del_ratios), dimension(:), allocatable :: cha_dr
+
+      type res_exco_del_ratios
+        character(len=25) :: name = "default"
+        type (hyd_output) :: trap              !aquifer gain/losses
+      end type res_exco_del_ratios
+      type (res_exco_del_ratios), dimension(:), allocatable :: res_dr
 
       type aqu_exco_del_ratios
         type (hyd_output) :: trap              !aquifer gain/losses

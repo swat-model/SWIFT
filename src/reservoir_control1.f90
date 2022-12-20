@@ -22,14 +22,18 @@
             
       !! calculate Brune trap efficiency (deposition)
       if (ob(iob)%hin%flo > 1.) then
-        residence = res1(ires)%res_db%pvol / ob(iob)%hin%flo
+        !! ha-m / m3
+        residence = 10000. * res1(ires)%res_db%pvol / ob(iob)%hin%flo
         trap_eff = residence / (.012 + 1.02 * residence)
       else
         trap_eff = 0.
       end if
       
-      !! flow and constituents leaving reservoir
+      !! sediment and constituents leaving reservoir
       ob(iob)%hd(1) = (1. - trap_eff) * ob(iob)%hin
+      
+      !! use reservoir delivery input for outflow
+      ob(iob)%hd(1)%flo = res_dr(ires)%trap%flo * ob(iob)%hin%flo
       
       write (1977, *) ires, res1(ires)%name, res1(ires)%area_ha
       write (1977, *) ' INFLOW    ', ob(iob)%hin

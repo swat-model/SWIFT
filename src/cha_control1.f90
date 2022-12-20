@@ -49,17 +49,23 @@
       real :: vel_crit                  !m/s        |critical flow velocity to initiate bed movement
       real :: cohesion                  !??         |soil cohesion
       real :: veg                       !           |cover factor
+      real :: fpdepo_mm                 !mm         |flood plain sediment deposition
+      real :: fpwidth_km                !mm         |flood plain width
+      real :: w_yr                      !           |widths of bank erosion per year
+      real :: d_yr                      !           |depths of downcutting per year
       
       icha = ob(iob)%num
       icha_db = ob(iob)%props
+      cha1(icha)%area_ha = ob(iob)%area_ha
+      cha1(icha)%name = ob(iob)%name
             
       !! check equations with Peter
-      cha1(icha)%dat%chw = 150.
-      cha1(icha)%dat%chd = 3.
-      cha1(icha)%dat%chs = 0.0009
-      cha1(icha)%dat%ch_clay = 35.
-      cha1(icha)%dat%ch_bd = 1.43
-      cha1(icha)%dat%sinu = 1.4
+      !cha1(icha)%dat%chw = 150.
+      !cha1(icha)%dat%chd = 3.
+      !cha1(icha)%dat%chs = 0.0009
+      !cha1(icha)%dat%ch_clay = 35.
+      !cha1(icha)%dat%ch_bd = 1.43
+      !cha1(icha)%dat%sinu = 1.4
       
       !! calculate flood plain deposition and losses
       !! calculate sediment concentration at bankfull (Q1) using sediment rating curve exp
@@ -71,7 +77,6 @@
       depo_fr = amax1(0., depo_fr)
       depo_fr = amin1(1., depo_fr)
       cha2(icha)%fp_dep = depo_fr * ob(iob)%hin
-      ob(iob)%hd(1) = ob(iob)%hin - cha2(icha)%fp_dep 
       
       !! calculate in channel depsosition and losses -  input delivery ratio
       ch_flo = 1. - cha1(icha)%sed%fp_flo_fr
@@ -81,7 +86,7 @@
       b_exp = 8.53 / (1. + exp(-29.11 + 1.8 * cha1(icha)%dat%ch_clay)) ** 0.0248
       vel = 1.37 * (cha1(icha)%dat%chs ** 0.31) * (12. * cha1(icha)%dat%chw) ** 0.32
       rad_curv = (12. * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
-                                       (13. * (cha1(icha)%dat%sinu - 1.) ** 0.5)
+                                       (13. * (cha1(icha)%dat%sinu - 0.999) ** 0.5)
       vel_bend = vel * (1.74 - 0.52 * log10 (rad_curv / cha1(icha)%dat%chw))
       vel_tot = 0.33 * vel_bend + 0.66 * vel
       cohesion = (-87.1 + (42.82 * cha1(icha)%dat%ch_clay) - (0.267 * cha1(icha)%dat%ch_clay ** 2.) &
@@ -97,14 +102,14 @@
       !! arc length = 0.33 * meander wavelength * sinuosity  -> protected length 
       arc_len = 0.33 *  (12. * cha1(icha)%dat%chw) * cha1(icha)%dat%sinu
       ebank_t = ebank_m * cha1(icha)%dat%chd * arc_len * cha1(icha)%dat%ch_bd
-      ebank_t = amax1 (0., ebank_t)
+      cha2(icha)%bank_ero%sed = amax1 (0., ebank_t)
       
       !!calculate bed erosion
       d50_m = cha1(icha)%dat%d50 / 1000.
       !! compute flow rate at bankfull - assume rectangular
       xarea = cha1(icha)%dat%chw * cha1(icha)%dat%chd
       hyd_rad = xarea / (cha1(icha)%dat%chw + 2. * cha1(icha)%dat%chd)
-      qcms = xarea * hyd_rad ** .6666 * Sqrt(cha1(icha)%dat%chn) / (cha1(icha)%dat%chn)
+      qcms = xarea * hyd_rad ** .6666 * Sqrt(cha1(icha)%dat%chs) / (cha1(icha)%dat%chn + 0.0001)
       str_pow = 9810. * qcms * cha1(icha)%dat%chs / cha1(icha)%dat%chw !stream power
       str_pow_cr = 100. * (16.2 * d50_m) ** 1.5
       if (str_pow - str_pow_cr > 1.e-6) then
@@ -115,16 +120,18 @@
       end if
       sedcap_t = sedcap_ppm * ob(iob)%hin%flo / 1000000.  !t = ppm (g/m3) * 1 t/m3 / 1000000. g/t
       !! concentration of incoming and bank erosion
-      sedin_t = ob(iob)%hin%sed + ebank_t
+      sedin_t = ob(iob)%hin%sed + ebank_t - cha2(icha)%fp_dep%sed
       ebtm_t = sedcap_t - sedin_t
       if (ebtm_t > 0.) then
-        dep = 0.
+        cha2(icha)%bed_ero%sed = ebtm_t
+        !! m = t / (t/m3 * m * km * 1000 m/km)
+        ebtm_m = ebtm_t / (1.3 * cha1(icha)%dat%chw * cha1(icha)%dat%chl * 1000.)
       else
-        dep = -ebtm_t
-        ebtm_t = 0.
+        cha2(icha)%bed_dep%sed = -ebtm_t
+        cha2(icha)%bed_dep%orgn = (-ebtm_t / sedin_t) * (ob(iob)%hin%orgn - cha2(icha)%fp_dep%orgn)
+        cha2(icha)%bed_dep%sedp = (-ebtm_t / sedin_t) * (ob(iob)%hin%sedp - cha2(icha)%fp_dep%sedp)
+        ebtm_m = 0.
       end if
-      !! m = t / (t/m3 * m * km * 1000 m/km)
-      ebtm_m = ebtm_t / (1.3 * cha1(icha)%dat%chw * cha1(icha)%dat%chl * 1000.)
       
       !rad_curv = (11.26 * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
       !                                 (13. * (cha1(icha)%dat%sinu - 1.) ** 0.5)
@@ -152,6 +159,14 @@
       cha2(icha)%bank_ero%nh3 = 0.
       cha2(icha)%bank_ero%no2 = 0.
 
+      !! calculate associated nutrients - ppm
+      cha2(icha)%bed_ero%orgn = cha2(icha)%bed_ero%sed * cha1(icha)%dat%n_conc
+      cha2(icha)%bed_ero%sedp = (1. - cha1(icha)%dat%p_bio) * cha2(icha)%bed_ero%sed * cha1(icha)%dat%p_conc
+      cha2(icha)%bed_ero%no3 = 0.
+      cha2(icha)%bed_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bed_ero%sed * cha1(icha)%dat%p_conc
+      cha2(icha)%bed_ero%nh3 = 0.
+      cha2(icha)%bed_ero%no2 = 0.
+
       !! sediment leaving channel
       ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep
          
@@ -160,8 +175,29 @@
       write (1979, *) ' OUTFLOW   ', ob(iob)%hd(1)
       write (1979, *) ' BANK_ERO  ', cha2(icha)%bank_ero
       write (1979, *) ' BED_ERO   ', cha2(icha)%bed_ero
+      write (1979, *) ' BED_DEP   ', cha2(icha)%bed_dep
       write (1979, *) ' FP_DEP    ', cha2(icha)%fp_dep
       write (1979, *) ' CH_ROUT   ', cha2(icha)%ch_rout
+      
+      !! bank parameter output
+      w_yr = ebank_m / cha1(icha)%dat%chw
+      write (1984, *) icha, cha1(icha)%name, cha1(icha)%area_ha, cha1(icha)%dat%chw, cha1(icha)%dat%chl,    &
+          cha1(icha)%dat%ch_bd, cha1(icha)%dat%sinu, vel_tot, vel_crit, cohesion, e_days, rad_curv,         &
+          arc_len, ebank_t, ebank_m, w_yr
+      
+      !! bed parameter output
+      d_yr = ebtm_m / cha1(icha)%dat%chd
+      write (1985, *) icha, cha1(icha)%name, cha1(icha)%area_ha, cha1(icha)%dat%chw, cha1(icha)%dat%chd,    &
+          cha1(icha)%dat%chl, d50_m, qcms, str_pow, str_pow_cr, sedcap_ppm, sedcap_t, sedin_t, ebtm_t,      &
+          ebtm_m, d_yr
+      
+      !! flood plain parameter output
+      fpwidth_km = 0.000012 * (100. * cha1(icha)%area_ha) ** 0.982 !Beighley and Gummadi, ESPL
+      !! mm = t / (km*km*t/m3) * km/1000.m * km/1000.m * 1000.mm/m = t/(km*km*t/m3) / 1000.
+      fpdepo_mm = cha2(icha)%fp_dep%sed / (1000. * fpwidth_km *  cha1(icha)%dat%chl * cha1(icha)%dat%ch_bd)
+      write (1986, *) icha, cha1(icha)%name, cha1(icha)%area_ha, cha1(icha)%sed%q1_qm,                      &
+          cha1(icha)%sed%rcurv_exp, cha1(icha)%sed%fp_inun_days, cha1(icha)%sed%fp_flo_fr, fp_sed_conc,     &
+          trap_eff, depo_fr, fpwidth_km, ob(iob)%hin%sed, cha2(icha)%fp_dep%sed, fpdepo_mm
       
       return
       end subroutine cha_control1

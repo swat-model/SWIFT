@@ -1,27 +1,17 @@
       subroutine output_hru
     
       use hru_module1
-      use climate_module1
       use hydrograph_module  !, only : sp_ob, sp_ob1, ob, hru_ex, hru_dr, hru_bmp
       use input_file_module
     
       implicit none
       
       integer :: ihru           !none       |hru counter
-      integer :: iob            !none       |object counter
-      integer :: ihru_db        !none       |number of hru data
-      integer :: ipro           !none       |number of process (total runoff,surf,perc,lat,tile)
-      !integer :: iwst           !none       |precip gage number
-      integer :: i, k           !none       |variables used to set data number
-      integer :: iostat, eof
-      real :: runoff_mm
-      logical :: i_exist        !none       |check to determine if file exists
-      character (len=80) :: titldum   !           |title of file
 
       !! open hru.dat file
       open (1984,file="hru_ex.out",recl=1200)
-      write (1984,*) titldum
-      write (1984,*) titldum  !HEADERS - NUBZ
+      write (1984,*) 'hru_ex.out'
+      write (1984,*) 'headers and units'  !HEADERS - NUBZ
       
       !! read hru data
       do ihru = 1, sp_ob%hru

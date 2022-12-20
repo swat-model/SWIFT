@@ -18,7 +18,6 @@
       open (107,file = in_cha%cha_dat,recl=1200)
       read (107,*) titldum   !title
       read (107,*) titldum   !header
-      read (107,*) titldum   !units
       
       allocate (cha1(sp_ob%chandeg))
       allocate (cha2(sp_ob%chandeg))
@@ -40,7 +39,7 @@
       read (107,*) titldum   !title
       read (107,*) i
       read (107,*) titldum   !header
-      !read (107,*) titldum   !units
+      read (107,*) titldum   !units
       
       allocate (cha_dr(sp_ob%chandeg))
       
