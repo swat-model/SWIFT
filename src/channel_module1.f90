@@ -151,6 +151,122 @@
           character(len=16) :: flo_mm     =  "             mm"        ! (mm) 
       end type sdch_header_units
       type (sdch_header_units) :: sdch_hdr_units
+      
+      type cha_bnk_header
+        character (len=12) :: cha         =   "      cha   "        
+        character (len=25) :: name        =   "name                     "                                             
+        character (len=12) :: area        =   "       area"
+        character (len=15) :: width       =   "         width"
+		character (len=15) :: length      =   "        length"
+		character (len=15) :: bulk_den    =   "      bulk_den"
+		character (len=15) :: sinous      =   "        sinous"
+		character (len=15) :: vel_tot     =   "       vel_tot"
+		character (len=15) :: vel_cr      =   "        vel_cr"
+        character (len=15) :: cohesion    =   "      cohesion"
+		character (len=15) :: edays       =   "         edays"
+		character (len=15) :: rad_curv    =   "      rad_curv"
+		character (len=15) :: arc_len     =   "       arc_len"
+		character (len=15) :: ebank       =   "         ebank"
+		character (len=15) :: ebank1      =   "         ebank"
+		character (len=15) :: w_yr        =   "          w/yr"
+      end type cha_bnk_header    
+      type (cha_bnk_header) :: hdr_cha_bnk 
+      
+      type cha_bnk_unt_header
+        character (len=12) :: cha         =   "            "        
+        character (len=25) :: name        =   "                         "       
+        character (len=12) :: area        =   "        ha  "
+        character (len=15) :: width       =   "           m  "
+		character (len=15) :: length      =   "          km  "
+		character (len=15) :: bulk_den    =   "        t/m3  "
+		character (len=15) :: sinous      =   "              "
+		character (len=15) :: vel_tot     =   "         m/s  "
+		character (len=15) :: vel_cr      =   "         m/s  "
+        character (len=15) :: cohesion    =   "              "
+		character (len=15) :: edays       =   "              "
+		character (len=15) :: rad_curv    =   "              "
+		character (len=15) :: arc_len     =   "              "
+		character (len=15) :: ebank       =   "           t  "
+		character (len=15) :: ebank1      =   "           m  "
+		character (len=15) :: w_yr        =   "              "
+      end type cha_bnk_unt_header    
+      type (cha_bnk_unt_header) :: hdr_cha_bnk_unt 
+      
+      type cha_bed_header
+        character (len=12) :: cha         =   "      cha   "        
+        character (len=25) :: name        =   "name                     "                                             
+        character (len=12) :: area        =   "       area"
+        character (len=15) :: width       =   "         width"
+        character (len=15) :: depth       =   "         depth"
+		character (len=15) :: length      =   "        length"
+		character (len=15) :: d50         =   "           d50"
+		character (len=15) :: q           =   "          q"
+		character (len=15) :: str_pow     =   "       str_pow"
+		character (len=15) :: strpow_cr   =   "     strpow_cr"
+        character (len=15) :: sedcap_ppm  =   "   sed_cap_ppm"
+        character (len=15) :: sedcap_t    =   "     sed_cap_t"
+		character (len=15) :: sed_in      =   "        sed_in"
+		character (len=15) :: ebed_t      =   "       e_bed_t"
+        character (len=15) :: ebed_m      =   "       e_bed_m"
+        character (len=15) :: d_yr        =   "          d_yr"
+      end type cha_bed_header    
+      type (cha_bed_header) :: hdr_cha_bed 
+      
+      type cha_bed_unt_header
+        character (len=12) :: cha         =   "            "        
+        character (len=25) :: name        =   "                         "                                             
+        character (len=12) :: area        =   "        ha  "
+        character (len=15) :: width       =   "           m   "
+        character (len=15) :: depth       =   "           m   "
+		character (len=15) :: length      =   "          km   "       
+		character (len=15) :: d50         =   "           m   "
+		character (len=15) :: q           =   "        m3/s   "
+		character (len=15) :: str_pow     =   "               "
+		character (len=15) :: strpow_cr   =   "               "
+        character (len=15) :: sedcap_ppm  =   "         ppm   "
+        character (len=15) :: sedcap_t    =   "           t   "
+		character (len=15) :: sed_in      =   "           t   "
+		character (len=15) :: ebed_t      =   "           t   "
+        character (len=15) :: ebed_m      =   "           m   "
+        character (len=15) :: d_yr        =   "               "
+      end type cha_bed_unt_header    
+      type (cha_bed_unt_header) :: hdr_cha_bed_unt
+      
+      type cha_fp_header
+        character (len=12) :: cha         =   "      cha   "        
+        character (len=25) :: name        =   "name                     "                                             
+        character (len=12) :: area        =   "       area"
+        character (len=15) :: q1_qm       =   "         q1/qm"
+        character (len=15) :: rcur_exp    =   "      rcur_dep"
+		character (len=15) :: fp_inun_d   =   "     fp_inun_d"
+		character (len=15) :: fp_flo_fr   =   "     fp_flo_fr"
+		character (len=15) :: fp_sed_con  =   "    fp_sed_con"
+		character (len=15) :: trap_eff    =   "      trap_eff"
+		character (len=15) :: depo_fr     =   "       depo_fr"
+        character (len=15) :: fp_width    =   "      fp_width"
+        character (len=15) :: sed_in      =   "        sed_in"
+		character (len=15) :: fp_sed_t    =   "      fp_sed_t"
+		character (len=15) :: fp_sed_m    =   "      fp_sed_m"
+      end type cha_fp_header    
+      type (cha_fp_header) :: hdr_cha_fp 
+      
+      type cha_fp_header_unt
+        character (len=12) :: cha         =   "            "        
+        character (len=25) :: name        =   "                         "                                             
+        character (len=12) :: area        =   "        ha  "
+        character (len=15) :: q1_qm       =   "              "
+        character (len=15) :: rcur_exp    =   "              "
+		character (len=15) :: fp_inun_d   =   "              "
+		character (len=15) :: fp_flo_fr   =   "              "
+		character (len=15) :: fp_sed_con  =   "        ppm   "
+		character (len=15) :: trap_eff    =   "              "
+		character (len=15) :: depo_fr     =   "              "
+        character (len=15) :: fp_width    =   "         km   "
+        character (len=15) :: sed_in      =   "          t   "
+		character (len=15) :: fp_sed_t    =   "          t   "
+		character (len=15) :: fp_sed_m    =   "         mm   "
+      end type cha_fp_header_unt    
+      type (cha_fp_header_unt) :: hdr_cha_fp_unt
      
       interface operator (+)
         module procedure chsd_add

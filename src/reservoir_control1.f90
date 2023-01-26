@@ -39,5 +39,8 @@
       write (1977, *) ' INFLOW    ', ob(iob)%hin
       write (1977, *) ' OUTFLOW   ', ob(iob)%hd(1)
       
+!!    res_flo.out file
+      write (1987,*) ires, res1(IRES), ob(iob)%hin%flo, residence, trap_eff
+      
       return
       end subroutine reservoir_control1

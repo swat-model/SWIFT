@@ -8,7 +8,8 @@
       character*10 b(3)                 !              |
       character (len=80) :: prog
       
-      prog = " SWIFT Feb 14 2022    MODULAR Rev 2022.1"
+      !prog = " SWIFT Feb 14 2022    MODULAR Rev 2022.1"
+      prog = " SWIFT Jan 18 2023    MODULAR Rev 2023.1"
 
       write (*,1000)
       open (9003,file='simulation.out')

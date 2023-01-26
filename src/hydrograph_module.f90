@@ -284,7 +284,7 @@
         character (len=15) :: temp =    "           null"        !! deg c        |temperature
       end type hyd_header
       type (hyd_header) :: hyd_hdr
-  
+      
       interface operator (+)
         module procedure hydout_add
       end interface

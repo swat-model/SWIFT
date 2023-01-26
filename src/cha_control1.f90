@@ -78,12 +78,12 @@
       depo_fr = amin1(1., depo_fr)
       cha2(icha)%fp_dep = depo_fr * ob(iob)%hin
       
-      !! calculate in channel depsosition and losses -  input delivery ratio
+      !! calculate in channel deposition and losses -  input delivery ratio
       ch_flo = 1. - cha1(icha)%sed%fp_flo_fr
       cha2(icha)%ch_rout = cha_dr(icha)%instr_dr ** (ch_flo * ob(iob)%hin)
       
       !! calculate bank erosion
-      b_exp = 8.53 / (1. + exp(-29.11 + 1.8 * cha1(icha)%dat%ch_clay)) ** 0.0248
+      b_exp = 5.53 / (1. + exp(-29.11 + 1.8 * cha1(icha)%dat%ch_clay)) ** 0.0248
       vel = 1.37 * (cha1(icha)%dat%chs ** 0.31) * (12. * cha1(icha)%dat%chw) ** 0.32
       rad_curv = (12. * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
                                        (13. * (cha1(icha)%dat%sinu - 0.999) ** 0.5)
@@ -110,6 +110,8 @@
       xarea = cha1(icha)%dat%chw * cha1(icha)%dat%chd
       hyd_rad = xarea / (cha1(icha)%dat%chw + 2. * cha1(icha)%dat%chd)
       qcms = xarea * hyd_rad ** .6666 * Sqrt(cha1(icha)%dat%chs) / (cha1(icha)%dat%chn + 0.0001)
+      !! try qcms = q1 --> qcms = q1/qm * qm
+      !qcms = cha1(icha)%sed%q1_qm * ob(iob)%hin%flo / 365.
       str_pow = 9810. * qcms * cha1(icha)%dat%chs / cha1(icha)%dat%chw !stream power
       str_pow_cr = 100. * (16.2 * d50_m) ** 1.5
       if (str_pow - str_pow_cr > 1.e-6) then
@@ -118,7 +120,8 @@
       else
         sedcap_ppm = 0.
       end if
-      sedcap_t = sedcap_ppm * ob(iob)%hin%flo / 1000000.  !t = ppm (g/m3) * 1 t/m3 / 1000000. g/t
+      !! only for 1% flows so multiply by 0.01
+      sedcap_t = 0.01 * sedcap_ppm * ob(iob)%hin%flo / 1000000.  !t = ppm (g/m3) * 1 t/m3 / 1000000. g/t
       !! concentration of incoming and bank erosion
       sedin_t = ob(iob)%hin%sed + ebank_t - cha2(icha)%fp_dep%sed
       ebtm_t = sedcap_t - sedin_t
