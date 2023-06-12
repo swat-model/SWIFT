@@ -40,7 +40,7 @@
         else
           trap_eff = 0.
         end if
-        !! flow and constituents leaving reservoir
+        !! flow and constituents leaving wetland
         ob(iob)%hd(1) = trap_eff * ob(iob)%hin
         
         write (1980, *) ' INFLOW    ', ob(iob)%hin

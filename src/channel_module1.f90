@@ -88,69 +88,29 @@
       type (sd_ch_output) :: bchsd_a
       type (sd_ch_output) :: chsdz
             
-      type sdch_header
-          character (len=6) :: day        =  "  jday"
-          character (len=6) :: mo         =  "   mon"
-          character (len=6) :: day_mo     =  "   day"
-          character (len=6) :: yrc        =  "    yr"
-          character (len=8) :: isd        =  "   unit "
-          character (len=8) :: id         =  " gis_id "           
-          character (len=16) :: name      =  " name          "        
-          character(len=16) :: flo_in     =  "         flo_in"        ! (m^3/s)
-          character(len=16) :: aqu_in     =  "         aqu_in"        ! (m^3/s)
-          character(len=16) :: flo        =  "        flo_out"        ! (m^3/s)
-          character(len=15) :: peakr      =  "          peakr"        ! (m^3/s)
-          character(len=15) :: sed_in     =  "         sed_in"        ! (tons)
-          character(len=15) :: sed_out    =  "        sed_out"        ! (tons)
-          character(len=15) :: washld     =  "         washld"        ! (tons)
-          character(len=15) :: bedld      =  "          bedld"        ! (tons)
-          character(len=15) :: dep        =  "            dep"        ! (tons)
-          character(len=15) :: deg_btm    =  "        deg_btm"        ! (tons)
-          character(len=15) :: deg_bank   =  "       deg_bank"        ! (tons)
-          character(len=15) :: hc_sed     =  "         hc_sed"        ! (tons)
-          character(len=15) :: width      =  "          width"        ! (m)
-          character(len=15) :: depth      =  "          depth"        ! (m)
-          character(len=15) :: slope      =  "          slope"        ! (m/m)
-          character(len=15) :: deg_btm_m  =  "        deg_btm"        ! (m)
-          character(len=15) :: deg_bank_m =  "       deg_bank"        ! (m)
-          character(len=15) :: hc_len     =  "         hc_len"        ! (m)
-          character(len=16) :: flo_in_mm  =  "      flo_in_mm"        ! (mm)
-          character(len=16) :: aqu_in_mm  =  "      aqu_in_mm"        ! (mm)
-          character(len=16) :: flo_mm     =  "     flo_out_mm"        ! (mm)
-      end type sdch_header
-      type (sdch_header) :: sdch_hdr
+      type cha_header      
+          character(len=16) :: flo        =  "            flow"        ! (m^3)
+          character(len=16) :: sed        =  "        sediment"        ! (tons)
+          character(len=16) :: orgn       =  "       organic_n"        ! (kg)
+          character(len=15) :: orgp       =  "       organic_p"        ! (kg)
+          character(len=15) :: no3        =  "     nitrate_no3"        ! (kg)
+          character(len=15) :: minp       =  "    soluble_minp"        ! (kg)
+          character(len=15) :: nh3        =  "             nh3"        ! (kg)
+          character(len=15) :: no2        =  "             no2"        ! (kg)
+      end type cha_header
+      type (cha_header) :: hdr_cha
       
-     type sdch_header_units
-          character (len=6) :: day        =  "      "
-          character (len=6) :: mo         =  "      "
-          character (len=6) :: day_mo     =  "      "
-          character (len=6) :: yrc        =  "      "
-          character (len=8) :: isd        =  "        "
-          character (len=8) :: id         =  "        "           
-          character (len=16) :: name      =  "              "        
-          character(len=16) :: flo_in     =  "          m^3/s"       ! (m^3/s)
-          character(len=16) :: aqu_in     =  "          m^3/s"       ! (m^3/s)      
-          character(len=16) :: flo        =  "          m^3/s"       ! (m^3/s) 
-          character(len=15) :: peakr      =  "          m^3/s"        ! (m^3/s)
-          character(len=15) :: sed_in     =  "           tons"        ! (tons)
-          character(len=15) :: sed_out    =  "           tons"        ! (tons)
-          character(len=15) :: washld     =  "           tons"        ! (tons)
-          character(len=15) :: bedld      =  "           tons"        ! (tons)
-          character(len=15) :: dep        =  "           tons"        ! (tons)
-          character(len=15) :: deg_btm    =  "           tons"        ! (tons)
-          character(len=15) :: deg_bank   =  "           tons"        ! (tons)
-          character(len=15) :: hc_sed     =  "           tons"        ! (tons)
-          character(len=15) :: width      =  "              m"        ! (m)
-          character(len=15) :: depth      =  "              m"        ! (m)
-          character(len=15) :: slope      =  "            m/m"        ! (m/m)
-          character(len=15) :: deg_btm_m  =  "              m"        ! (m)
-          character(len=15) :: deg_bank_m =  "              m"        ! (m)
-          character(len=15) :: hc_len     =  "              m"        ! (m)
-          character(len=16) :: flo_in_mm  =  "             mm"        ! (mm)
-          character(len=16) :: aqu_in_mm  =  "             mm"        ! (mm)      
-          character(len=16) :: flo_mm     =  "             mm"        ! (mm) 
-      end type sdch_header_units
-      type (sdch_header_units) :: sdch_hdr_units
+     type cha_header_units        
+          character(len=16) :: flo        =  "             m^3"        ! (m^3)
+          character(len=16) :: sed        =  "            tons"        ! (tons)
+          character(len=16) :: orgn       =  "              kg"        ! (kg)
+          character(len=15) :: orgp       =  "              kg"        ! (kg)
+          character(len=15) :: no3        =  "              kg"        ! (kg)
+          character(len=15) :: minp       =  "              kg"        ! (kg)
+          character(len=15) :: nh3        =  "              kg"        ! (kg)
+          character(len=15) :: no2        =  "              kg"        ! (kg)
+      end type cha_header_units
+      type (cha_header_units) :: hdr_cha_unt
       
       type cha_bnk_header
         character (len=12) :: cha         =   "      cha   "        
@@ -159,6 +119,8 @@
         character (len=15) :: width       =   "         width"
 		character (len=15) :: length      =   "        length"
 		character (len=15) :: bulk_den    =   "      bulk_den"
+		character (len=15) :: b_exp       =   "         b_exp"
+		character (len=15) :: clay        =   "          clay"
 		character (len=15) :: sinous      =   "        sinous"
 		character (len=15) :: vel_tot     =   "       vel_tot"
 		character (len=15) :: vel_cr      =   "        vel_cr"
@@ -172,23 +134,25 @@
       end type cha_bnk_header    
       type (cha_bnk_header) :: hdr_cha_bnk 
       
-      type cha_bnk_unt_header
-        character (len=12) :: cha         =   "            "        
-        character (len=25) :: name        =   "                         "       
+      type cha_bnk_unt_header          
+        character (len=12) :: cha         =   "       --   "      
+        character (len=25) :: name        =   " --                      "       
         character (len=12) :: area        =   "        ha  "
         character (len=15) :: width       =   "           m  "
 		character (len=15) :: length      =   "          km  "
 		character (len=15) :: bulk_den    =   "        t/m3  "
-		character (len=15) :: sinous      =   "              "
+		character (len=15) :: b_exp       =   "          --  "
+		character (len=15) :: clay        =   "           %  "
+		character (len=15) :: sinous      =   "          --  "
 		character (len=15) :: vel_tot     =   "         m/s  "
 		character (len=15) :: vel_cr      =   "         m/s  "
-        character (len=15) :: cohesion    =   "              "
-		character (len=15) :: edays       =   "              "
-		character (len=15) :: rad_curv    =   "              "
-		character (len=15) :: arc_len     =   "              "
+        character (len=15) :: cohesion    =   "          Pa  "
+		character (len=15) :: edays       =   "        days  "
+		character (len=15) :: rad_curv    =   "           m  "
+		character (len=15) :: arc_len     =   "           m  "
 		character (len=15) :: ebank       =   "           t  "
 		character (len=15) :: ebank1      =   "           m  "
-		character (len=15) :: w_yr        =   "              "
+		character (len=15) :: w_yr        =   "          --  "
       end type cha_bnk_unt_header    
       type (cha_bnk_unt_header) :: hdr_cha_bnk_unt 
       
@@ -212,23 +176,23 @@
       end type cha_bed_header    
       type (cha_bed_header) :: hdr_cha_bed 
       
-      type cha_bed_unt_header
-        character (len=12) :: cha         =   "            "        
-        character (len=25) :: name        =   "                         "                                             
+      type cha_bed_unt_header         
+        character (len=12) :: cha         =   "       --   "      
+        character (len=25) :: name        =   " --                      "                                      
         character (len=12) :: area        =   "        ha  "
         character (len=15) :: width       =   "           m   "
         character (len=15) :: depth       =   "           m   "
 		character (len=15) :: length      =   "          km   "       
 		character (len=15) :: d50         =   "           m   "
 		character (len=15) :: q           =   "        m3/s   "
-		character (len=15) :: str_pow     =   "               "
-		character (len=15) :: strpow_cr   =   "               "
+		character (len=15) :: str_pow     =   "        W/m2   "
+		character (len=15) :: strpow_cr   =   "        W/m2   "
         character (len=15) :: sedcap_ppm  =   "         ppm   "
         character (len=15) :: sedcap_t    =   "           t   "
 		character (len=15) :: sed_in      =   "           t   "
 		character (len=15) :: ebed_t      =   "           t   "
         character (len=15) :: ebed_m      =   "           m   "
-        character (len=15) :: d_yr        =   "               "
+        character (len=15) :: d_yr        =   "          --   "
       end type cha_bed_unt_header    
       type (cha_bed_unt_header) :: hdr_cha_bed_unt
       
@@ -250,17 +214,17 @@
       end type cha_fp_header    
       type (cha_fp_header) :: hdr_cha_fp 
       
-      type cha_fp_header_unt
-        character (len=12) :: cha         =   "            "        
-        character (len=25) :: name        =   "                         "                                             
-        character (len=12) :: area        =   "        ha  "
-        character (len=15) :: q1_qm       =   "              "
-        character (len=15) :: rcur_exp    =   "              "
-		character (len=15) :: fp_inun_d   =   "              "
-		character (len=15) :: fp_flo_fr   =   "              "
+      type cha_fp_header_unt         
+        character (len=12) :: cha         =   "       --   "      
+        character (len=25) :: name        =   " --                      "                                    
+        character (len=12) :: area        =   "        ha  "      
+        character (len=15) :: q1_qm       =   "         --   "
+        character (len=15) :: rcur_exp    =   "         --   "
+		character (len=15) :: fp_inun_d   =   "       days   "
+		character (len=15) :: fp_flo_fr   =   "         --   "
 		character (len=15) :: fp_sed_con  =   "        ppm   "
-		character (len=15) :: trap_eff    =   "              "
-		character (len=15) :: depo_fr     =   "              "
+		character (len=15) :: trap_eff    =   "         --   "
+		character (len=15) :: depo_fr     =   "         --   "
         character (len=15) :: fp_width    =   "         km   "
         character (len=15) :: sed_in      =   "          t   "
 		character (len=15) :: fp_sed_t    =   "          t   "

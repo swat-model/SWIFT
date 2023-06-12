@@ -37,8 +37,10 @@
       call proc_cha
       call proc_aqu
       call proc_res
-      !write header to output files
+      !! write header to output files
       call proc_open
+      
+      !! route and add average annual flows
       call command
            
       !! write successful completion to screen and file

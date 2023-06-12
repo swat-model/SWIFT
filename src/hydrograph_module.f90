@@ -63,7 +63,7 @@
       type cha_exco_del_ratios
         type (hyd_output) :: bank_ero           !bank erosion
         type (hyd_output) :: bed_ero            !bed erosion
-        type (hyd_output) :: bed_dep            !bed erosion
+        type (hyd_output) :: bed_dep            !bed deposition
         type (hyd_output) :: ch_rout            !in channel routing losses
         type (hyd_output) :: fp_dep             !flood plain deposition
         type (hyd_output) :: instr_dr           !instream delivery ratios
