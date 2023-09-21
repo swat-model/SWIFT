@@ -59,7 +59,8 @@
       real :: dep_fall                  !m          |depth of particle fall
       real :: ttime                     !hr         |travel time through the reach
       real :: del_rto                   !frac       |delivery of suspended sediment through reach
-      real :: q_sed                     !kg/m/s     |sediment bed erosion per unit width
+      real :: q_sed_ppm                 !ppm        |bed transport - ppm
+      real :: q_sed                     !t/day      |sediment bed erosion per unit width
       icha = ob(iob)%num
       icha_db = ob(iob)%props
       cha1(icha)%area_ha = ob(iob)%area_ha
@@ -92,11 +93,11 @@
       xarea = cha1(icha)%dat%chw * cha1(icha)%dat%chd
       hyd_rad = xarea / (cha1(icha)%dat%chw + 2. * cha1(icha)%dat%chd)
       !! adjust n for small order streams < 10 km2
-      if (cha1(icha)%area_ha < 1000.) then
-        n_mann = 1.85 * cha1(icha)%dat%chs ** 0.79
-      else
+      !if (cha1(icha)%area_ha < 1000.) then
+      !  n_mann = 1.85 * cha1(icha)%dat%chs ** 0.79
+      !else
         n_mann = cha1(icha)%dat%chn
-      end if
+      !end if
       vel = hyd_rad ** .6666 * Sqrt(cha1(icha)%dat%chs) / (n_mann + 0.0001)
       qcms = xarea * vel
       !! try qcms = q1 --> qcms = q1/qm * qm
@@ -104,6 +105,7 @@
       
       !! calculate bank erosion
       b_exp = 5.53 / (1. + exp(-29.11 + 1.8 * cha1(icha)%dat%ch_clay)) ** 0.0248
+      b_exp = min (3.5, b_exp)
       !vel = 1.37 * (cha1(icha)%dat%chs ** 0.31) * (12. * cha1(icha)%dat%chw) ** 0.32
       rad_curv = (12. * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
                                        (13. * (cha1(icha)%dat%sinu - 0.999) ** 0.5)
@@ -122,21 +124,38 @@
       !! arc length = 0.33 * meander wavelength * sinuosity  -> protected length 
       arc_len = 0.33 *  (12. * cha1(icha)%dat%chw) * cha1(icha)%dat%sinu
       ebank_t = ebank_m * cha1(icha)%dat%chd * arc_len * cha1(icha)%dat%ch_bd
-      cha2(icha)%bank_ero%sed = amax1 (0., ebank_t)
+      !! assume 20% is sand and the remainder is washload - need to make a function of d50 or input sand in bank
+      cha2(icha)%bank_ero%sed = 0.8 * ebank_t
+      cha2(icha)%bank_ero%nh3 = 0.2 * ebank_t       !using nh3 for bedload
+      
+      !! assume sand in bank is deposited and rest is washload
       
       !!calculate bed erosion
       d50_m = cha1(icha)%dat%d50 / 1000.
-      str_pow = 9810. * qcms * cha1(icha)%dat%chs / cha1(icha)%dat%chw !stream power
-      str_pow_cr = 100. * (16.2 * d50_m) ** 1.5
-      q_sed = 0.0214 * (str_pow - str_pow_cr) ** 1.5 / (sqrt(d50_m) * sqrt(qcms/cha1(icha)%dat%chw))    !kg/m/s - Lammers and Bledsoe
-      ebtm_m = q_sed * 86.4 * cha1(icha)%dat%chw
+      str_pow = 9810. * qcms * cha1(icha)%dat%chs   !/ cha1(icha)%dat%chw !stream power
+      str_pow_cr = 100. * (16.2 * d50_m) ** 1.5     !.1*1000. (2.65-1_*9.81*d50)**1.5
+      if (str_pow > str_pow_cr) then
+      !! Lammers and Bledsoe - ppm
+        q_sed_ppm = 0.0214 * (str_pow - str_pow_cr) ** 1.5 * (d50_m ** -1) * (qcms ** -0.833)
+      else
+        q_sed_ppm = 0.0
+      end if
+      ebtm_t = 0.0027 * qcms * q_sed_ppm * cha1(icha)%dat%chw
+      !! check if > incoming sediment
+      if (ebtm_t * e_days > ob(iob)%hin%sed + ob(iob)%hin%nh3) then
+          cha1(icha)%dat%d50_sub = 80.
+        vel_crit = 0.293 * (cha1(icha)%dat%d50_sub) ** 0.5
+        !! downcutting of bottom sub surface (below deposited sand)
+        ebtm_m = 0.0024 * e_days * (vel_tot / vel_crit) ** 2.5
+      else
+        ebtm_m = 0.
+      end if
       !! t = m * (t/m3 * m * km * 1000 m/km)
       ebtm_t = ebtm_m * (cha1(icha)%dat%ch_bd * cha1(icha)%dat%chw * cha1(icha)%dat%chl * 1000.)
-      cha2(icha)%bed_ero%sed = ebtm_t
       
       !! calculate channel deposition based on fall velocity - SWRRB book
       !! assume particle size = 0.03 mm -- median silt size
-      d_part = 0.03
+      d_part = 0.002
       vel_fall = 411. * d_part ** 2     ! m/h
       ttime = cha1(icha)%dat%chl / (3.6 * vel)      !km / m/s * 1000m/km * h/3600s
       dep_fall = vel_fall * ttime
@@ -146,14 +165,14 @@
       else
         del_rto = .5 * cha1(icha)%dat%chd / dep_fall
       end if
-      cha2(icha)%bed_dep%sed = del_rto * ob(iob)%hin%sed
+      cha2(icha)%bed_dep%sed = (1. - del_rto) * ob(iob)%hin%sed
       
       !! calculate associated nutrients - ppm
       cha2(icha)%bank_ero%orgn = cha2(icha)%bank_ero%sed * cha1(icha)%dat%n_conc
       cha2(icha)%bank_ero%sedp = (1. - cha1(icha)%dat%p_bio) * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
       cha2(icha)%bank_ero%no3 = 0.
       cha2(icha)%bank_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
-      cha2(icha)%bank_ero%nh3 = 0.
+      !cha2(icha)%bank_ero%nh3 = 0.
       cha2(icha)%bank_ero%no2 = 0.
 
       !! calculate associated nutrients - ppm
@@ -161,13 +180,13 @@
       cha2(icha)%bed_ero%sedp = (1. - cha1(icha)%dat%p_bio) * cha2(icha)%bed_ero%sed * cha1(icha)%dat%p_conc
       cha2(icha)%bed_ero%no3 = 0.
       cha2(icha)%bed_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bed_ero%sed * cha1(icha)%dat%p_conc
-      cha2(icha)%bed_ero%nh3 = 0.
+      cha2(icha)%bed_ero%nh3 = ebtm_t      !using nh3 for bedload
       cha2(icha)%bed_ero%no2 = 0.
 
       !! sediment leaving channel
       ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep
          
-      write (1979, *) icha, cha1(icha)%name, cha1(icha)%area_ha
+      write (1979, *) ' number ', icha, ' name ', cha1(icha)%name, ' area_ha ', cha1(icha)%area_ha
       write (1979, *) 'INFLOW   ', ob(iob)%hin
       write (1979, *) 'OUTFLOW  ', ob(iob)%hd(1)
       write (1979, *) 'BANK_ERO ', cha2(icha)%bank_ero

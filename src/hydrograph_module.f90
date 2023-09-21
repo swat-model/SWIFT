@@ -89,7 +89,21 @@
 
       type (hyd_output), dimension(:), allocatable :: recall        !treatment/industrial, gage data, or model output
       
-      type (hyd_output), dimension(5) :: bsn_out
+      type (hyd_output), dimension(5) :: bsn_hru_out                !basin landscape (hru) output
+      type basin_channel_budget
+        type (hyd_output) :: incoming           !water, sediment, and nutrients entering channels
+        type (hyd_output) :: outgoing           !water, sediment, and nutrients leaving channels
+        type (hyd_output) :: bank_ero           !bank erosion
+        type (hyd_output) :: bed_ero            !bed erosion
+        type (hyd_output) :: bed_dep            !bed deposition
+        type (hyd_output) :: fp_dep             !flood plain deposition
+      end type basin_channel_budget
+      type (cha_exco_del_ratios) :: bsn_ch_out
+        type (hyd_output) :: outgoing           !water, sediment, and nutrients leaving channels
+        type (hyd_output) :: incoming           !water, sediment, and nutrients entering channels
+
+      type (hyd_output), dimension(5) :: bsn_ps_out                 !basin point source output
+      type (hyd_output), dimension(5) :: bsn_res_out                !basin reservoir output
       
       type lsu_deliveries
         character(len=25) :: name = "default"

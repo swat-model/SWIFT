@@ -20,7 +20,7 @@
         real :: carbon = 0.     !%          |cabon percent of bank and bed
         real :: ch_bd = 0.      !t/m3       |dry bulk density
         real :: chss = 0.       !           |channel side slope
-        real :: bedldcoef = 0.  !           |percent of sediment entering the channel that is bed material
+        real :: d50_sub = 20.   !mm         |d50 of the sub bottom material
         real :: fps = 0.000001  !m/m        |flood plain slope
         real :: fpn = 0.1       !           |flood plain Manning's n
         real :: n_conc = 0.     !mg/kg      |nitrogen concentration in channel bank
@@ -54,10 +54,10 @@
         real :: aqu_in = 0.             !(m^3/s)       |aveerage daily aquifer inflow rate during timestep
         real :: flo = 0.                !(m^3/s)       |average daily outflow rate during timestep
         real :: peakr = 0.              !(m^3/s)       |average peak runoff rate during timestep
-        real :: sed_in = 0.             !(tons)        |sediment in
-        real :: sed_out = 0.            !(tons)        |sediment out
-        real :: washld = 0.             !(tons)        |wash load (suspended) out
-        real :: bedld = 0.              !(tons)        |bed load out
+        real :: washld_in = 0.          !(tons)        |wash load (suspended) in
+        real :: bedld_in = 0.           !(tons)        |bed load in
+        real :: washld_out = 0.         !(tons)        |wash load (suspended) out
+        real :: bedld_out = 0.          !(tons)        |bed load out
         real :: dep = 0.                !(tons)        |deposition in channel and flood plain
         real :: deg_btm = 0.            !(tons)        |erosion of channel bottom 
         real :: deg_bank = 0.           !(tons)        |erosion of channel bank
@@ -89,14 +89,14 @@
       type (sd_ch_output) :: chsdz
             
       type cha_header      
-          character(len=16) :: flo        =  "            flow"        ! (m^3)
-          character(len=16) :: sed        =  "        sediment"        ! (tons)
-          character(len=16) :: orgn       =  "       organic_n"        ! (kg)
-          character(len=15) :: orgp       =  "       organic_p"        ! (kg)
-          character(len=15) :: no3        =  "     nitrate_no3"        ! (kg)
-          character(len=15) :: minp       =  "    soluble_minp"        ! (kg)
-          character(len=15) :: nh3        =  "             nh3"        ! (kg)
-          character(len=15) :: no2        =  "             no2"        ! (kg)
+          character(len=16) :: flo        =  "            flow "        ! (m^3)
+          character(len=16) :: sed        =  "        sediment "        ! (tons)
+          character(len=16) :: orgn       =  "       organic_n "        ! (kg)          
+          character(len=15) :: orgp       =  "      organic_p "         ! (kg)         
+          character(len=15) :: no3        =  "    nitrate_no3 "         ! (kg)
+          character(len=15) :: minp       =  "    soluble_minp "        ! (kg)          
+          character(len=15) :: nh3        =  "       bedload "          ! (tons)
+          character(len=15) :: no2        =  "           null"          ! (kg)
       end type cha_header
       type (cha_header) :: hdr_cha
       
@@ -104,11 +104,11 @@
           character(len=16) :: flo        =  "             m^3"        ! (m^3)
           character(len=16) :: sed        =  "            tons"        ! (tons)
           character(len=16) :: orgn       =  "              kg"        ! (kg)
-          character(len=15) :: orgp       =  "              kg"        ! (kg)
-          character(len=15) :: no3        =  "              kg"        ! (kg)
-          character(len=15) :: minp       =  "              kg"        ! (kg)
-          character(len=15) :: nh3        =  "              kg"        ! (kg)
-          character(len=15) :: no2        =  "              kg"        ! (kg)
+          character(len=15) :: orgp       =  "             kg"         ! (kg)
+          character(len=15) :: no3        =  "             kg"         ! (kg)       
+          character(len=15) :: minp       =  "             kg"         ! (kg)
+          character(len=15) :: nh3        =  "          tons"          ! (tons)    
+          character(len=15) :: no2        =  "           null"         ! (kg)
       end type cha_header_units
       type (cha_header_units) :: hdr_cha_unt
       
@@ -259,10 +259,10 @@
        cho3%aqu_in = cho1%aqu_in + cho2%aqu_in
        cho3%flo = cho1%flo + cho2%flo
        cho3%peakr = cho1%peakr + cho2%peakr
-       cho3%sed_in = cho1%sed_in + cho2%sed_in
-       cho3%sed_out = cho1%sed_out + cho2%sed_out
-       cho3%washld = cho1%washld + cho2%washld
-       cho3%bedld = cho1%bedld + cho2%bedld
+       cho3%washld_in = cho1%washld_in + cho2%washld_in
+       cho3%bedld_in = cho1%bedld_in + cho2%bedld_in
+       cho3%washld_out = cho1%washld_out + cho2%washld_out
+       cho3%bedld_out = cho1%bedld_out + cho2%bedld_out
        cho3%dep = cho1%dep + cho2%dep
        cho3%deg_btm = cho1%deg_btm + cho2%deg_btm
        cho3%deg_bank = cho1%deg_bank + cho2%deg_bank
@@ -287,10 +287,10 @@
         ch2%aqu_in = ch1%aqu_in
         ch2%flo = ch1%flo
         ch2%peakr = ch1%peakr
-        ch2%sed_in = ch1%sed_in / const
-        ch2%sed_out = ch1%sed_out / const
-        ch2%washld = ch1%washld / const
-        ch2%bedld = ch1%bedld / const
+        ch2%washld_in = ch1%washld_in / const
+        ch2%washld_out = ch1%washld_out / const
+        ch2%bedld_in = ch1%bedld_in / const
+        ch2%bedld_out = ch1%bedld_out / const
         ch2%dep = ch1%dep / const
         ch2%deg_btm = ch1%deg_btm / const
         ch2%deg_bank = ch1%deg_bank / const
@@ -315,10 +315,10 @@
         ch2%aqu_in = ch1%aqu_in / const
         ch2%flo = ch1%flo / const
         ch2%peakr = ch1%peakr / const
-        ch2%sed_in = ch1%sed_in
-        ch2%sed_out = ch1%sed_out
-        ch2%washld = ch1%washld
-        ch2%bedld = ch1%bedld
+        ch2%washld_in = ch1%washld_in
+        ch2%washld_out = ch1%washld_out
+        ch2%bedld_in = ch1%bedld_in
+        ch2%bedld_out = ch1%bedld_out
         ch2%dep = ch1%dep
         ch2%deg_btm = ch1%deg_btm
         ch2%deg_bank = ch1%deg_bank
@@ -343,10 +343,10 @@
         chn2%aqu_in = const * chn1%aqu_in
         chn2%flo = const * chn1%flo
         chn2%peakr = const * chn1%peakr
-        chn2%sed_in = const * chn1%sed_in
-        chn2%sed_out = const * chn1%sed_out
-        chn2%washld = const * chn1%washld
-        chn2%bedld = const * chn1%bedld
+        chn2%washld_in = const * chn1%washld_in
+        chn2%washld_out = const * chn1%washld_out
+        chn2%bedld_in = const * chn1%bedld_in
+        chn2%bedld_out = const * chn1%bedld_out
         chn2%dep = const * chn1%dep
         chn2%deg_btm = const * chn1%deg_btm
         chn2%deg_bank = const * chn1%deg_bank
