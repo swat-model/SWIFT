@@ -46,7 +46,8 @@
       real :: vel                       !m/s        |flow velocity
       real :: vel_bend                  !m/s        |flow velocity in meander bend
       real :: vel_tot                   !m/s        |mean flow velocity
-      real :: vel_crit                  !m/s        |critical flow velocity to initiate bed movement
+      real :: vel_crit                  !m/s        |critical flow velocity to initiate bank movement
+      real :: vel_crit_bd               !m/s        |critical flow velocity to initiate bed movement
       real :: cohesion                  !??         |soil cohesion
       real :: veg                       !           |cover factor
       real :: fpdepo_mm                 !mm         |flood plain sediment deposition
@@ -118,7 +119,11 @@
       vel_crit = log10 (8.8 * cha1(icha)%dat%chd / 0.004) * (0.0004 * ((cha1(icha)%dat%ch_bd *     &
                         1000. - 1000.) * 9.81 * 0.004 + 0.021 * cohesion + veg)) ** 0.5
       e_days = 3.65     !assume 1% of time (q1 flows)
-      ebank_m = 0.0024 * e_days * (vel_tot / vel_crit) ** b_exp
+      if (vel_tot > vel_crit) then
+        ebank_m = 0.0024 * e_days * (vel_tot / vel_crit) ** b_exp
+      else
+        ebank_m = 0.
+      end if
           
       !! calc mass of sediment eroded -> t = bankcut (m) * depth (m) * lengthcut (m) * bd (t/m3)
       !! arc length = 0.33 * meander wavelength * sinuosity  -> protected length 
@@ -143,10 +148,15 @@
       ebtm_t = 0.0027 * qcms * q_sed_ppm * cha1(icha)%dat%chw
       !! check if > incoming sediment
       if (ebtm_t * e_days > ob(iob)%hin%sed + ob(iob)%hin%nh3) then
-          cha1(icha)%dat%d50_sub = 80.
-        vel_crit = 0.293 * (cha1(icha)%dat%d50_sub) ** 0.5
-        !! downcutting of bottom sub surface (below deposited sand)
-        ebtm_m = 0.0024 * e_days * (vel_tot / vel_crit) ** 2.5
+        cha1(icha)%dat%d50_sub = 20.
+        vel_crit_bd = 0.293 * (cha1(icha)%dat%d50_sub) ** 0.5
+        if (vel_tot > vel_crit_bd) then
+          !! downcutting of bottom sub surface (below deposited sand)
+          e_days = 1.825    !assume Q0.5 does downcutting
+          ebtm_m = 0.0024 * e_days * (vel_tot / vel_crit_bd) ** 1.5
+        else
+          ebtm_m = 0.
+        end if
       else
         ebtm_m = 0.
       end if
@@ -199,13 +209,15 @@
       w_yr = ebank_m / cha1(icha)%dat%chw
       write (1988, *) icha, cha1(icha)%name, cha1(icha)%area_ha, cha1(icha)%dat%chw, cha1(icha)%dat%chl,    &
           cha1(icha)%dat%ch_bd, b_exp, cha1(icha)%dat%ch_clay, cha1(icha)%dat%sinu, vel_tot, vel_crit,      &
-          cohesion, e_days, rad_curv, arc_len, ebank_t, ebank_m, w_yr
+          cohesion, e_days, rad_curv, arc_len, ebank_t, ebank_m, w_yr !, ob(iob)%hin%sed, ob(iob)%hin%nh3,    &
+          !ob(iob)%hd(1)%sed, ob(iob)%hd(1)%nh3
       
       !! bed parameter output
       d_yr = ebtm_m / cha1(icha)%dat%chd
       write (1985, *) icha, cha1(icha)%name, cha1(icha)%area_ha, cha1(icha)%dat%chw, cha1(icha)%dat%chd,    &
-          cha1(icha)%dat%chl, d50_m, qcms, str_pow, str_pow_cr, sedcap_ppm, sedcap_t, sedin_t, ebtm_t,      &
-          ebtm_m, d_yr
+          cha1(icha)%dat%chl, cha1(icha)%dat%d50_sub, qcms, str_pow, str_pow_cr, sedcap_ppm, sedcap_t,      &
+          vel_tot, vel_crit_bd, ebtm_t, ebtm_m, d_yr !, ob(iob)%hin%sed, ob(iob)%hin%nh3, ob(iob)%hd(1)%sed,  &
+          !ob(iob)%hd(1)%nh3
       
       !! flood plain parameter output
       fpwidth_km = 0.000012 * (100. * cha1(icha)%area_ha) ** 0.982 !Beighley and Gummadi, ESPL

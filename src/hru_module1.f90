@@ -258,4 +258,27 @@
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru
       type (hydrologic_response_unit), dimension(:), allocatable, target :: hru_init
 
+      type exco_header      
+          character(len=16) :: flo        =  "            flow "        ! (mm)
+          character(len=16) :: sed        =  "        sediment "        ! (t/ha)
+          character(len=16) :: orgn       =  "       organic_n "        ! (kg/ha)          
+          character(len=15) :: orgp       =  "      organic_p "         ! (kg/ha)         
+          character(len=15) :: no3        =  "    nitrate_no3 "         ! (kg/ha)
+          character(len=15) :: minp       =  "    soluble_minp "        ! (kg/ha)          
+          character(len=15) :: nh3        =  "           null "         ! ()
+          character(len=15) :: no2        =  "           null "         ! ()
+      end type exco_header
+      type (exco_header) :: hdr_exco
+      
+     type exco_header_units        
+          character(len=16) :: flo        =  "             mm"         ! (m^3)
+          character(len=16) :: sed        =  "            t/ha"        ! (t/ha)
+          character(len=16) :: orgn       =  "           kg/ha"        ! (kg)
+          character(len=15) :: orgp       =  "          kg/ha"         ! (kg)
+          character(len=15) :: no3        =  "          kg/ha"         ! (kg)       
+          character(len=15) :: minp       =  "          kg/ha"         ! (kg)
+          character(len=15) :: nh3        =  "           t/ha"         ! (tons)    
+          character(len=15) :: no2        =  "           null"         ! (kg)
+      end type exco_header_units
+      type (exco_header_units) :: hdr_exco_unt
       end module hru_module1

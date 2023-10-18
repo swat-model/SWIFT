@@ -10,12 +10,13 @@
 
       !! open hru.dat file
       open (1984,file="hru_ex.out",recl=1200)
-      write (1984,*) 'hru_ex.out'
-      write (1984,*) 'headers and units'  !HEADERS - NUBZ
+      write (1984,*) '  HRU LANDSCAPE OUTPUT  '
+      write (1984,*) hdr_exco
+      write (1984,*) hdr_exco_unt
       
-      !! read hru data
+      !! write hru data
       do ihru = 1, sp_ob%hru
-        write (1984, *) ' HRU       ', ihru
+        write (1984, *) ' HRU ', ihru, '  AREA_HA ', hru_dat(ihru)%area_ha
         call hyd_convert__mass_to_ha (ob(ihru)%hd(1), hru_dat(ihru)%area_ha)
         write (1984, *) ' TOTAL     ', ob(ihru)%hd(1)
         call hyd_convert__mass_to_ha (ob(ihru)%hd(2), hru_dat(ihru)%area_ha)

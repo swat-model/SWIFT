@@ -3,7 +3,7 @@
       use hru_module1
       use channel_module1
       use climate_module1
-      use hydrograph_module  !, only : sp_ob, sp_ob1, ob, hru_ex, hru_dr, hru_bmp
+      use hydrograph_module
       use input_file_module
       use calibration_data_module
     
@@ -23,13 +23,12 @@
       real :: bsn_area
       real :: precip_bsn
       real :: ch_tot_length = 0.
-      logical :: i_exist        !none       |check to determine if file exists
-      character (len=80) :: titldum   !           |title of file
+      logical :: i_exist                !none       |check to determine if file exists
+      character (len=80) :: titldum     !           |title of file
 
       !! open basin landscape output file
       open (107,file = "basin_ex.out",recl=1200)
       write (107,*) '  BASIN LANDSCAPE OUTPUT  '
-      write (107,*) '  HEADERS  '  !HEADERS - NUBZ
       
       !! sum hru data
       bsn_area = 0.
@@ -45,6 +44,8 @@
       
       !! write basin output
       write (107, *) ' BASIN   ', bsn%name, '   AREA HA   ', bsn_area
+      write (107,*) hdr_exco
+      write (107,*) hdr_exco_unt
       write (107, *) ' PRECIPITATION  ', precip_bsn
       write (107, *) ' TOTAL     ', bsn_hru_out(1)
       write (107, *) ' PERCO     ', bsn_hru_out(2)
@@ -57,15 +58,10 @@
       !! open basin channel output file
       open (107,file = "basin_ch.out",recl=1200)
       write (107,*) '  BASIN CHANNEL OUTPUT  '
-      write (107,*) '  HEADERS  '  !HEADERS - NUBZ
       
       !! sum channel data
       do icha = 1, sp_ob%chandeg
         iob = sp_ob1%chandeg + icha - 1
-        !bsn_ch_out%incoming = bsn_ch_out%incoming + ob(iob)%hin
-        !bsn_ch_out%outgoing = bsn_ch_out%outgoing + ob(iob)%hd(1)
-        incoming = incoming + ob(iob)%hin
-        outgoing = outgoing + ob(iob)%hd(1)
         bsn_ch_out%bank_ero = bsn_ch_out%bank_ero + cha2(icha)%bank_ero
         bsn_ch_out%bed_ero = bsn_ch_out%bed_ero + cha2(icha)%bed_ero
         bsn_ch_out%fp_dep = bsn_ch_out%fp_dep + cha2(icha)%fp_dep
@@ -74,8 +70,8 @@
       
       !! write basin output
       write (107, *) ' BASIN   ', bsn%name, '   TOTAL_LENGTH KM ', ch_tot_length
-      write (107, *) ' INCOMING  ', incoming
-      write (107, *) ' OUTGOING  ', outgoing
+      write (107,*) hdr_cha
+      write (107,*) hdr_cha_unt
       write (107, *) ' BANK_ERO  ', bsn_ch_out%bank_ero
       write (107, *) ' BED_ERO   ', bsn_ch_out%bed_ero
       write (107, *) ' FP_DEP    ', bsn_ch_out%fp_dep

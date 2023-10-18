@@ -131,6 +131,10 @@
 		character (len=15) :: ebank       =   "         ebank"
 		character (len=15) :: ebank1      =   "         ebank"
 		character (len=15) :: w_yr        =   "          w/yr"
+		!character (len=15) :: washin      =   "        washin"
+		!character (len=15) :: bedin       =   "         bedin"
+        !character (len=15) :: washout     =   "       washout"
+        !character (len=15) :: bedout      =   "        bedout"
       end type cha_bnk_header    
       type (cha_bnk_header) :: hdr_cha_bnk 
       
@@ -153,6 +157,10 @@
 		character (len=15) :: ebank       =   "           t  "
 		character (len=15) :: ebank1      =   "           m  "
 		character (len=15) :: w_yr        =   "          --  "
+		!character (len=15) :: washin      =   "           t  "
+		!character (len=15) :: bedin       =   "           t  "
+        !character (len=15) :: washout     =   "           t  "
+        !character (len=15) :: bedout      =   "           t  "
       end type cha_bnk_unt_header    
       type (cha_bnk_unt_header) :: hdr_cha_bnk_unt 
       
@@ -169,10 +177,15 @@
 		character (len=15) :: strpow_cr   =   "     strpow_cr"
         character (len=15) :: sedcap_ppm  =   "   sed_cap_ppm"
         character (len=15) :: sedcap_t    =   "     sed_cap_t"
-		character (len=15) :: sed_in      =   "        sed_in"
+		character (len=15) :: vel_tot     =   "       vel_tot"
+		character (len=15) :: vel_cr      =   "        vel_cr"
 		character (len=15) :: ebed_t      =   "       e_bed_t"
         character (len=15) :: ebed_m      =   "       e_bed_m"
         character (len=15) :: d_yr        =   "          d_yr"
+		!character (len=15) :: washin      =   "        washin"
+		!character (len=15) :: bedin       =   "         bedin"
+        !character (len=15) :: washout     =   "       washout"
+        !character (len=15) :: bedout      =   "        bedout"
       end type cha_bed_header    
       type (cha_bed_header) :: hdr_cha_bed 
       
@@ -189,10 +202,15 @@
 		character (len=15) :: strpow_cr   =   "        W/m2   "
         character (len=15) :: sedcap_ppm  =   "         ppm   "
         character (len=15) :: sedcap_t    =   "           t   "
-		character (len=15) :: sed_in      =   "           t   "
+		character (len=15) :: vel_tot     =   "         m/s   "
+		character (len=15) :: vel_cr      =   "         m/s   "
 		character (len=15) :: ebed_t      =   "           t   "
         character (len=15) :: ebed_m      =   "           m   "
         character (len=15) :: d_yr        =   "          --   "
+		!character (len=15) :: washin      =   "           t  "
+		!character (len=15) :: bedin       =   "           t  "
+        !character (len=15) :: washout     =   "           t  "
+        !character (len=15) :: bedout      =   "           t  "
       end type cha_bed_unt_header    
       type (cha_bed_unt_header) :: hdr_cha_bed_unt
       
