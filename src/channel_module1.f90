@@ -30,10 +30,10 @@
       
       type channel_sediment_data
         character(len=16) :: name
-        real :: q1_qm = 4.          !ratio      |ratio of 1% flow to mean flow
+        real :: q1_qm = 3.          !ratio      |ratio of 1% flow to mean flow
         real :: rcurv_exp = 1.2     !           |exponent coefficient for sediment rating curve adjustment for overbank concentration
-        real :: fp_inun_days = 3.   !days       |days of flood plain inundation per year
-        real :: fp_flo_fr = 0.05    !frac       |fraction of annual flow that goes overbank
+        real :: fp_inun_days = 2.   !days       |days of flood plain inundation per year
+        real :: fp_flo_fr = 0.02    !frac       |fraction of annual flow that goes overbank
         real :: wd_yr = 0.3         !frac       |widths per year of channel widening
         real :: ch_fp_w_rto = 3.    !ratio      |channel/flood plain width ratio
       end type channel_sediment_data

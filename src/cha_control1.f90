@@ -66,27 +66,21 @@
       icha_db = ob(iob)%props
       cha1(icha)%area_ha = ob(iob)%area_ha
       cha1(icha)%name = ob(iob)%name
-            
-      !! check equations with Peter
-      !cha1(icha)%dat%chw = 150.
-      !cha1(icha)%dat%chd = 3.
-      !cha1(icha)%dat%chs = 0.0009
-      !cha1(icha)%dat%ch_clay = 35.
-      !cha1(icha)%dat%ch_bd = 1.43
-      !cha1(icha)%dat%sinu = 1.4
       
       !! calculate flood plain deposition and losses
       !! calculate sediment concentration at bankfull (Q1) using sediment rating curve exp
       fp_sed_conc = (cha1(icha)%sed%q1_qm) ** cha1(icha)%sed%rcurv_exp
       !! fraction overbank sediment deposited - based on fall velocity and days inundated
       trap_eff = 1.2 * exp(-0.424 * cha1(icha)%sed%fp_inun_days)
+      trap_eff = 0.24 * log(cha1(icha)%sed%fp_inun_days) + 0.1
       !! calculate deposition and outflow
       depo_fr = cha1(icha)%sed%fp_flo_fr * fp_sed_conc * trap_eff
       depo_fr = amax1(0., depo_fr)
       depo_fr = amin1(1., depo_fr)
       cha2(icha)%fp_dep = depo_fr * ob(iob)%hin
+      cha2(icha)%fp_dep%nh3 = 0.
       
-      !! calculate in channel deposition and losses -  input delivery ratio
+      !! calculate in channel nutrient losses -  input delivery ratio
       ch_flo = 1. - cha1(icha)%sed%fp_flo_fr
       cha2(icha)%ch_rout = cha_dr(icha)%instr_dr ** (ch_flo * ob(iob)%hin)
       
@@ -100,6 +94,7 @@
         n_mann = cha1(icha)%dat%chn
       !end if
       vel = hyd_rad ** .6666 * Sqrt(cha1(icha)%dat%chs) / (n_mann + 0.0001)
+      !vel = cha1(icha)%sed%q1_qm * ob(iob)%hin%flo / xarea / 86400.
       qcms = xarea * vel
       !! try qcms = q1 --> qcms = q1/qm * qm
       !qcms = cha1(icha)%sed%q1_qm * ob(iob)%hin%flo / 365.
@@ -112,6 +107,7 @@
                                        (13. * (cha1(icha)%dat%sinu - 0.999) ** 0.5)
       vel_bend = vel * (1.74 - 0.52 * log10 (rad_curv / cha1(icha)%dat%chw))
       vel_tot = 0.33 * vel_bend + 0.66 * vel
+      vel_tot = vel_bend
       cohesion = (-87.1 + (42.82 * cha1(icha)%dat%ch_clay) - (0.267 * cha1(icha)%dat%ch_clay ** 2.) &
                                      + (0.029 * cha1(icha)%dat%ch_clay ** 3.)) * 2.
       cohesion = amax1 (1000., cohesion)    !min 1000 for sandy soils
@@ -176,14 +172,6 @@
         del_rto = .5 * cha1(icha)%dat%chd / dep_fall
       end if
       cha2(icha)%bed_dep%sed = (1. - del_rto) * ob(iob)%hin%sed
-      
-      !! calculate associated nutrients - ppm
-      cha2(icha)%bank_ero%orgn = cha2(icha)%bank_ero%sed * cha1(icha)%dat%n_conc
-      cha2(icha)%bank_ero%sedp = (1. - cha1(icha)%dat%p_bio) * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
-      cha2(icha)%bank_ero%no3 = 0.
-      cha2(icha)%bank_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
-      !cha2(icha)%bank_ero%nh3 = 0.
-      cha2(icha)%bank_ero%no2 = 0.
 
       !! calculate associated nutrients - ppm
       cha2(icha)%bed_ero%orgn = cha2(icha)%bed_ero%sed * cha1(icha)%dat%n_conc
@@ -203,7 +191,9 @@
       write (1979, *) 'BED_ERO  ', cha2(icha)%bed_ero
       write (1979, *) 'BED_DEP ', cha2(icha)%bed_dep
       write (1979, *) 'FP_DEP   ', cha2(icha)%fp_dep
-      write (1979, *) 'CH_ROUT  ', cha2(icha)%ch_rout
+      
+      write (1979, *) icha, cha1(icha)%name, cha1(icha)%area_ha, ob(iob)%hin, ob(iob)%hd(1), cha2(icha)%bank_ero,  &
+          cha2(icha)%bed_dep, cha2(icha)%fp_dep
       
       !! bank parameter output
       w_yr = ebank_m / cha1(icha)%dat%chw
