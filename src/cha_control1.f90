@@ -182,18 +182,10 @@
       cha2(icha)%bed_ero%no2 = 0.
 
       !! sediment leaving channel
-      ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep
-         
-      write (1979, *) ' number ', icha, ' name ', cha1(icha)%name, ' area_ha ', cha1(icha)%area_ha
-      write (1979, *) 'INFLOW   ', ob(iob)%hin
-      write (1979, *) 'OUTFLOW  ', ob(iob)%hd(1)
-      write (1979, *) 'BANK_ERO ', cha2(icha)%bank_ero
-      write (1979, *) 'BED_ERO  ', cha2(icha)%bed_ero
-      write (1979, *) 'BED_DEP ', cha2(icha)%bed_dep
-      write (1979, *) 'FP_DEP   ', cha2(icha)%fp_dep
-      
-      write (1979, *) icha, cha1(icha)%name, cha1(icha)%area_ha, ob(iob)%hin, ob(iob)%hd(1), cha2(icha)%bank_ero,  &
-          cha2(icha)%bed_dep, cha2(icha)%fp_dep
+      ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep  
+      write (1979,'(I4,22X, (A25),1(F22.4),48(F22.4))') icha, cha1(icha)%name, cha1(icha)%area_ha, ob(iob)%hin, ob(iob)%hd(1), &
+          cha2(icha)%bank_ero, cha2(icha)%bed_ero, cha2(icha)%bed_dep, cha2(icha)%fp_dep
+
       
       !! bank parameter output
       w_yr = ebank_m / cha1(icha)%dat%chw

@@ -14,11 +14,13 @@
       integer,  intent (in) :: iob
       real :: residence                 !m3/m3      |residence time
       real :: trap_eff                  !frac       |Brune reservoir trap efficiency
+            
+
       
       ihru = ob(iob)%props
       
-      write (1980, *) ihru, hru_dat(ihru)%name, hru_dat(ihru)%area_ha, hru_dat(iob)%precip, hru_dat(ihru)%lum, &
-                             hru_dat(ihru)%hsg, hru_dat(ihru)%surf_stor, hru_dat(ihru)%dr
+      !write (1980, *) ihru, hru_dat(ihru)%name, hru_dat(ihru)%area_ha, hru_dat(iob)%precip, hru_dat(ihru)%lum, &
+                             !hru_dat(ihru)%hsg, hru_dat(ihru)%surf_stor, hru_dat(ihru)%dr
       
       !! if routing over the hru, add the runon/runoff
       if (hru_dat(ihru)%dr == "y") then
@@ -42,18 +44,19 @@
         end if
         !! flow and constituents leaving wetland
         ob(iob)%hd(1) = trap_eff * ob(iob)%hin
-        
-        write (1980, *) ' INFLOW    ', ob(iob)%hin
-        write (1980, *) ' OUTFLOW   ', ob(iob)%hd(1)
+        !write (1980, *) ihru, hru_dat(ihru)%name, hru_dat(ihru)%area_ha
+        !write (1980, *) ' INFLOW    ', ob(iob)%hin
+        !write (1980, *) ' OUTFLOW   ', ob(iob)%hd(1)
       end if
       
       !! if no routing or wetland, ob()%hd(:) is set from the inputs
       if (hru_dat(ihru)%dr == "n") then
-        write (1980, *) ' TOTAL     ', ob(iob)%hd(1)
-        write (1980, *) ' PERCO     ', ob(iob)%hd(2)
-        write (1980, *) ' SURFACE   ', ob(iob)%hd(3)
-        write (1980, *) ' LATERAL   ', ob(iob)%hd(4)
-        write (1980, *) ' TILE      ', ob(iob)%hd(5)
+          write (1980, *) ihru, hru_dat(ihru)%name, hru_dat(ihru)%area_ha, hru_dat(iob)%precip, &
+                             hru_dat(ihru)%hsg, hru_dat(ihru)%surf_stor," ", hru_dat(ihru)%dr,&
+                             ob(iob)%hd(1), ob(iob)%hd(2), ob(iob)%hd(3), ob(iob)%hd(4),&
+                             ob(iob)%hd(5), ob(iob)%hin, ob(iob)%hd(1)
+      else 
+          write (1980, *) ihru, hru_dat(ihru)%name, hru_dat(ihru)%area_ha, hru_dat(iob)%precip
       end if
       
       return
