@@ -37,12 +37,19 @@
       call proc_cha
       call proc_aqu
       call proc_res
+      !! call calibration routines
+      call cal_parm_read
+      call cal_parmchg_read
+      call cal_conditions
       !! write header to output files
       call proc_open
       
       !! route and add average annual flows
       call command
            
+      !! write object.prt
+      call object_output
+      
       !! write successful completion to screen and file
       write (*,1001)
       write (9003,1001)

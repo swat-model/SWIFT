@@ -212,7 +212,7 @@
         real :: com_p
         real :: man_n
         real :: man_p
-        type (wetland_data) :: desc
+        character(len=80) :: desc
       end type hydrologic_response_unit_mgt
       type (hydrologic_response_unit_mgt), dimension(:), allocatable, target :: hru_mgt
   

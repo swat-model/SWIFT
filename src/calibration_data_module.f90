@@ -24,12 +24,6 @@
         character(len=16) :: chg_typ    !! type of change (absval,abschg,pctchg)
         real :: val                     !! value of change
         integer :: conds                !! number of conditions
-        integer :: lyr1                 !! first layer in range for soil variables (0 assumes all layers are modified)
-        integer :: lyr2                 !! last layer in range for soil variables (0 assumes through last layer)
-        integer :: year1                !! first year for precip and temp
-        integer :: year2                !! last year for precip and temp
-        integer :: day1                 !! first day in range for precip and temp
-        integer :: day2                 !! last day in range for precip and temp
         integer :: num_tot = 0          !! total number of integers read in
         integer :: num_elem = 0         !! total number of elements modified (ie - 1 -5 18; num_tot=3 and num_elem=6)
         integer, dimension(:), allocatable :: num
