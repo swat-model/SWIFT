@@ -105,9 +105,10 @@
       !vel = 1.37 * (cha1(icha)%dat%chs ** 0.31) * (12. * cha1(icha)%dat%chw) ** 0.32
       rad_curv = (12. * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
                                        (13. * (cha1(icha)%dat%sinu - 0.999) ** 0.5)
-      vel_bend = vel * (1.74 - 0.52 * log10 (rad_curv / cha1(icha)%dat%chw))
+      !vel_bend = vel * (1.74 - 0.52 * log10 (rad_curv / cha1(icha)%dat%chw))
+      vel_bend = vel * (1.66 - 0.42 * log10 (rad_curv / cha1(icha)%dat%chw))
       vel_tot = 0.33 * vel_bend + 0.66 * vel
-      !vel_tot = vel_bend
+      vel_tot = vel_bend
       cohesion = (-87.1 + (42.82 * cha1(icha)%dat%ch_clay) - (0.267 * cha1(icha)%dat%ch_clay ** 2.) &
                                      + (0.029 * cha1(icha)%dat%ch_clay ** 3.)) * 2.
       cohesion = (15. / (15.3 - 0.438 * cha1(icha)%dat%ch_clay + 0.0044 * cha1(icha)%dat%ch_clay ** 2.)) * 1000.
@@ -217,6 +218,23 @@
       write (1986, *) icha, cha1(icha)%name, cha1(icha)%area_ha, cha1(icha)%sed%q1_qm,                      &
           cha1(icha)%sed%rcurv_exp, cha1(icha)%sed%fp_inun_days, cha1(icha)%sed%fp_flo_fr, fp_sed_conc,     &
           trap_eff, depo_fr, fpwidth_km, ob(iob)%hin%sed, cha2(icha)%fp_dep%sed, fpdepo_mm
+      
+      !! sum by stream order for calibration output
+      if (cha1(icha%dat%order <= 3) then
+        cal_out%so1_3%num_cha = cal_out%so1_3%num_cha + 1
+        cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
+        cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
+      end if
+      if (cha1(icha%dat%order <= 3) then
+        cal_out%so1_3%num_cha = cal_out%so1_3%num_cha + 1
+        cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
+        cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
+      end if
+      if (cha1(icha%dat%order <= 3) then
+        cal_out%so1_3%num_cha = cal_out%so1_3%num_cha + 1
+        cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
+        cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
+      end if
       
       return
       end subroutine cha_control1

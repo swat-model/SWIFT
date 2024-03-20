@@ -4,7 +4,7 @@
 
       type channel_data1
         character(len=16) :: name
-        character(len=16) :: order
+        integer :: order
         real :: chw = 0.        !m          |channel width
         real :: chd = 0.        !m          |channel depth
         real :: chs = 0.        !m/m        |channel slope
@@ -48,6 +48,31 @@
         type (channel_sediment_data) :: sed
       end type channel1
       type (channel1), dimension(:), allocatable :: cha1
+ 
+      type calibration_by_stream_order
+        integer :: num_cha = 0      !       |number of channels in the stream orders
+        real :: sum_wyr = 0.        !       |sum of widths per year 
+        real :: sum_fpdep = 0.      !mm     |flood plain deposition
+        real :: wyr_mean = 0.       !       |mean widths per year
+        real :: fpdep_mean = 0.     !mm     |mean flood plain deposition
+      end type calibration_by_stream_order
+      
+      type calibration_gage_data
+        character(len=25) :: name = ""
+        integer :: cha_num = 0      !       |channel number at gage site
+        real :: sum_wyr = 0.        !       |sum of widths per year 
+        real :: sed_t = 0.          !tons   |average annual sediment wash load at the gage
+      end type calibration_gage_data
+      
+      type calibration_output
+        type (calibration_by_stream_order), dimension(:), allocatable :: so1_3
+        type (calibration_by_stream_order), dimension(:), allocatable :: so4_6
+        type (calibration_by_stream_order), dimension(:), allocatable :: so7_9s
+        real :: up_cha_rto = 0.     !       |ratio of upland sediment delivered to channel erosion ratio 
+        real :: res_trap = 0.       !       |mean reservoir trap efficiency
+        type (calibration_gage_data), dimension(:), allocatable :: gage
+      end type calibration_output
+      type (calibration_gage_data) :: cal_out
  
       type sd_ch_output
         real :: flo_in = 0.             !(m^3/s)       |average daily inflow rate during time step

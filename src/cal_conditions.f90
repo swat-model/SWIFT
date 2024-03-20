@@ -43,7 +43,7 @@
                 cond_met = "n"
               end if
             case ("str_order")
-              if (cal_upd(ichg_par)%cond(ic)%targc /= pl_find) then
+              if (int(cal_upd(ichg_par)%cond(ic)%targ) /= cha1(ielem)%dat%order) then
                 cond_met = "n"
               end if
             end select
