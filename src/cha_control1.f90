@@ -93,16 +93,26 @@
       !else
         n_mann = cha1(icha)%dat%chn
       !end if
+      if (cha1(icha)%dat%chs < .00001) then !!! check and assign value if %dat%chs is 0
+          cha1(icha)%dat%chs = .00001
+      end if
       vel = hyd_rad ** .6666 * Sqrt(cha1(icha)%dat%chs) / (n_mann + 0.0001)
       !vel = cha1(icha)%sed%q1_qm * ob(iob)%hin%flo / xarea / 86400.
       qcms = xarea * vel
       !! try qcms = q1 --> qcms = q1/qm * qm
       !qcms = cha1(icha)%sed%q1_qm * ob(iob)%hin%flo / 365.
-      
+      !!cha1(icha)%dat%ch_clay over 65 giving floating point error quick fix
+      if (cha1(icha)%dat%ch_clay > 65) then
+          cha1(icha)%dat%ch_clay = 65
+      end if
       !! calculate bank erosion
       b_exp = 5.53 / (1. + exp(-29.11 + 1.8 * cha1(icha)%dat%ch_clay)) ** 0.0248
       b_exp = min (3.5, b_exp)
       !vel = 1.37 * (cha1(icha)%dat%chs ** 0.31) * (12. * cha1(icha)%dat%chw) ** 0.32
+      if (cha1(icha)%dat%sinu == 0.0000000E+00) then !!!floating point error fix
+        cha1(icha)%dat%sinu = 1.0
+      end if
+      
       rad_curv = (12. * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
                                        (13. * (cha1(icha)%dat%sinu - 0.999) ** 0.5)
       !vel_bend = vel * (1.74 - 0.52 * log10 (rad_curv / cha1(icha)%dat%chw))
@@ -114,6 +124,11 @@
       cohesion = (15. / (15.3 - 0.438 * cha1(icha)%dat%ch_clay + 0.0044 * cha1(icha)%dat%ch_clay ** 2.)) * 1000.
       cohesion = amax1 (1000., cohesion)    !min 1000 for sandy soils
       veg = 0.                              !function of cover factor
+      
+      if (cha1(icha)%dat%ch_bd < 1.) then !!! check and assign value if %dat%ch_bd is <1 prevents floating error
+          cha1(icha)%dat%ch_bd = 1.
+      end if
+      
       vel_crit = log10 (8.8 * cha1(icha)%dat%chd / 0.004) * (0.0004 * ((cha1(icha)%dat%ch_bd *     &
                         1000. - 1000.) * 9.81 * 0.004 + 0.021 * cohesion + veg)) ** 0.5
       e_days = 3.65     !assume 1% of time (q1 flows)
@@ -184,18 +199,9 @@
       cha2(icha)%bed_ero%no2 = 0.
 
       !! sediment leaving channel
-      ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep
-         
-      write (1979, *) ' number ', icha, ' name ', cha1(icha)%name, ' area_ha ', cha1(icha)%area_ha
-      write (1979, *) 'INFLOW   ', ob(iob)%hin
-      write (1979, *) 'OUTFLOW  ', ob(iob)%hd(1)
-      write (1979, *) 'BANK_ERO ', cha2(icha)%bank_ero
-      write (1979, *) 'BED_ERO  ', cha2(icha)%bed_ero
-      write (1979, *) 'BED_DEP ', cha2(icha)%bed_dep
-      write (1979, *) 'FP_DEP   ', cha2(icha)%fp_dep
-      
-      write (1979, *) icha, cha1(icha)%name, cha1(icha)%area_ha, ob(iob)%hin, ob(iob)%hd(1), cha2(icha)%bank_ero,  &
-          cha2(icha)%bed_dep, cha2(icha)%fp_dep
+      ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep  
+      write (1979,'(I4,22X, (A25),1(F22.4),48(F22.4))') icha, cha1(icha)%name, cha1(icha)%area_ha, ob(iob)%hin, ob(iob)%hd(1), &
+          cha2(icha)%bank_ero, cha2(icha)%bed_ero, cha2(icha)%bed_dep, cha2(icha)%fp_dep
       
       !! bank parameter output
       w_yr = ebank_m / cha1(icha)%dat%chw
@@ -218,23 +224,6 @@
       write (1986, *) icha, cha1(icha)%name, cha1(icha)%area_ha, cha1(icha)%sed%q1_qm,                      &
           cha1(icha)%sed%rcurv_exp, cha1(icha)%sed%fp_inun_days, cha1(icha)%sed%fp_flo_fr, fp_sed_conc,     &
           trap_eff, depo_fr, fpwidth_km, ob(iob)%hin%sed, cha2(icha)%fp_dep%sed, fpdepo_mm
-      
-      !! sum by stream order for calibration output
-      if (cha1(icha%dat%order <= 3) then
-        cal_out%so1_3%num_cha = cal_out%so1_3%num_cha + 1
-        cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
-        cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
-      end if
-      if (cha1(icha%dat%order <= 3) then
-        cal_out%so1_3%num_cha = cal_out%so1_3%num_cha + 1
-        cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
-        cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
-      end if
-      if (cha1(icha%dat%order <= 3) then
-        cal_out%so1_3%num_cha = cal_out%so1_3%num_cha + 1
-        cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
-        cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
-      end if
       
       return
       end subroutine cha_control1

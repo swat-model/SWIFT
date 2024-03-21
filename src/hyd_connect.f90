@@ -65,6 +65,8 @@
       rcv_sum = 0
       dfn_sum = 0
       ru_seq = 0
+      ! needed to access dir above SWIFT
+      call initialize_paths
       
       !! set first object number of each type
       nspu = 1

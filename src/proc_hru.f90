@@ -17,6 +17,8 @@
       real :: runoff_mm
       logical :: i_exist        !none       |check to determine if file exists
       character (len=80) :: titldum   !           |title of file
+      ! needed to access dir above SWIFT
+      call initialize_paths
 
       !! open hru.dat file
       open (107,file = in_hru%hru_dat,recl=1200)

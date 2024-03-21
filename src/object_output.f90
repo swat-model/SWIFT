@@ -13,7 +13,7 @@
         character (len=6) :: hydtyp    !! hydrograph type: tot,rhg,sur,lat,til
         integer :: objno               !! object number
         integer :: hydno               !! code computes from hydtyp
-        character (len=26) :: filename !! file with hydrograph output from the object
+        character (len=255) :: filename !! file with hydrograph output from the object
         integer :: unitno = 6100       !! filename unit number
       end type object_print_output
       type (object_print_output), dimension (:), allocatable :: ob_out
@@ -29,17 +29,21 @@
       integer :: iunit                !           |
       integer :: iout                 !           |  
       integer :: ihyd                 !           |
-            
+      
       mobj_out = 0
       imax = 0
       
+      call initialize_paths
+      
+      
+      
       !! read old saveconc properties
-      inquire (file="object_prt.swf",exist=i_exist)
-      if (.not. i_exist .or. "object_prt.swf" == "null") then         
+      inquire (file=in_swift_obj%prt,exist=i_exist)
+      if (.not. i_exist .or. in_swift_obj%prt == "null") then         
         allocate (ob_out(0:0))
       else
       do
-        open (107,file="object_prt.swf")
+        open (107,file=(in_swift_obj%prt))
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) header
@@ -62,8 +66,11 @@
           read (107,*,iostat=eof) i
           if (eof < 0) exit
           backspace (107)
-          read (107,*,iostat=eof) k, ob_out(i)%obtyp, ob_out(i)%obtypno, ob_out(i)%hydtyp,  &
-                                                                         ob_out(i)%filename
+          read (107,*,iostat=eof) k, ob_out(i)%obtyp, ob_out(i)%obtypno, ob_out(i)%hydtyp, ob_out(i)%filename
+
+          
+
+
           if (eof < 0) exit
           
           select case (ob_out(i)%obtyp)
@@ -105,8 +112,7 @@
         write (iunit+ii,*) "  VARIABLE-UNITS  "
         iout = ob_out(i)%objno
         ihyd = ob_out(i)%hydno
-        write (iunit+ii,*) ob(iout)%name, ob(iout)%typ, ob_out(i)%obtypno, ob_out(i)%hydtyp,    &
-                                                                                ob(iout)%hd(ihyd)
+        write (iunit+ii,*) ob(iout)%name, ob(iout)%typ, ob_out(i)%obtypno, ob_out(i)%hydtyp, ob(iout)%hd(ihyd)
         enddo    
         exit
       enddo
