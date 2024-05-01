@@ -21,15 +21,14 @@
       imax = 0
       mchg_par = 0
       
-      call initialize_paths
         
       !!read parameter change values for calibration
-      inquire (file=in_swift%cal_parms, exist=i_exist)
-      if (.not. i_exist .or. in_swift%cal_parms == "null") then
+      inquire (file="cal_parms.cal", exist=i_exist)
+      if (.not. i_exist .or. "cal_parms.cal" == "null") then
         allocate (cal_parms(0:0))
       else
         do
-          open (107,file=in_swift%cal_parms)
+          open (107,file="cal_parms.cal")
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
           read (107,*,iostat=eof) mchg_par

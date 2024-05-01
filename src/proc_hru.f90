@@ -17,8 +17,6 @@
       real :: runoff_mm
       logical :: i_exist        !none       |check to determine if file exists
       character (len=80) :: titldum   !           |title of file
-      ! needed to access dir above SWIFT
-      call initialize_paths
 
       !! open hru.dat file
       open (107,file = in_hru%hru_dat,recl=1200)
@@ -68,7 +66,7 @@
         ihru = ob(iob)%props
         hru_dat(iob)%obj_no = sp_ob1%hru + ihru - 1
         iwst = ob(hru_dat(iob)%obj_no)%wst
-        hru_dat(iob)%precip = precip(iwst)%ave_ann_mm
+        hru_dat(iob)%precip = cli(iwst)%precip_mm
         hru_dat(iob)%area_ha = ob(hru_dat(iob)%obj_no)%area_ha
         !! convert m3=mm*ha*10, t, kg for routing
         do ipro = 1, 5

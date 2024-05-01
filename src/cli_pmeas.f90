@@ -6,8 +6,8 @@
 
       character (len=80) :: titldum   !             |title of file
       integer :: eof                  !             |end of file
-      integer :: iprecip_db           !none         |number of precip gages
-      integer :: iaqu                 !             |channel counter
+      integer :: icli_db              !none         |number of climate gages
+      integer :: icli                 !none         |counter for climate gages
       integer :: i                    !none         |counter
       integer :: k                    !none         |counter
       
@@ -15,19 +15,19 @@
       
       open (107,file = "precip.swf",recl=1200)
       read (107,*) titldum      !title
-      read (107,*) iprecip_db
+      read (107,*) icli_db
       read (107,*) titldum      !header
       read (107,*) titldum      !units
       
-      allocate (precip(iprecip_db))
+      allocate (cli(icli_db))
       
       !! read hru data
-      do iaqu = 1, iprecip_db
+      do icli = 1, icli_db
         read (107,*,iostat=eof) i
         if (eof < 0) exit
         backspace (107)
         !! read from the aquifer database file named aquifer.aqu
-        read (107,*,iostat=eof) k, precip(i)%name, precip(i)%ave_ann_mm
+        read (107,*,iostat=eof) k, cli(i)%name, cli(i)%precip_mm, cli(i)%pet_mm
         if (eof < 0) exit
       end do
 

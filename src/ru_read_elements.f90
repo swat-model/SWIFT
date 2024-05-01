@@ -34,8 +34,6 @@
       imax = 0
       
       !!read data for each element in all subbasins
-      ! needed to access dir above SWIFT
-      call initialize_paths
       inquire (file=in_ru%ru_ele, exist=i_exist)
       if (i_exist .or. in_ru%ru_ele /= "null") then
       do

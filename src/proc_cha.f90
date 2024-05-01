@@ -32,6 +32,16 @@
         if (eof < 0) exit
       end do
 
+      !! read channel sediment data
+      do icha = 1, sp_ob%chandeg
+        read (107,*,iostat=eof) i
+        if (eof < 0) exit
+        backspace (107)
+        !! read from the aquifer database file named aquifer.aqu
+        read (107,*,iostat=eof) k, cha1(i)%sed
+        if (eof < 0) exit
+      end do
+
       close (107)
 
       !! read channel instream delivery data

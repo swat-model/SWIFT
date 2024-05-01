@@ -7,7 +7,7 @@
     character(len=255) :: main_directory
     character(len=255) :: cwd
     
-    character(len=255) :: swift_cal
+    
     
     integer :: diri
         
@@ -61,7 +61,6 @@
 
     in_swift_obj%prt = trim(main_directory) // "object.prt"
     
-    in_swift%cal =trim(main_directory) // "calibration.cal"
-    in_swift%cal_parms =trim(main_directory) // "cal_parms.cal"
+    
 
 end subroutine initialize_paths

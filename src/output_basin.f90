@@ -29,11 +29,6 @@
       !! open basin landscape output file
       open (107,file = "basin_ex.out",recl=1200)
       write (107,*) '  BASIN LANDSCAPE OUTPUT  '
-      write(107, "((A4,27X),(A4,9X),(A6,13X),(A1,4X),(A20),(*(A20:1X)))") lsu_header, iob_header
-      write(107, "(58X, *(A,8X, 1(A,6X),1(A,8X),1(A,6X),(A,2X),3(A,4X)4X))") &
-          hdr_exco, hdr_exco, hdr_exco, hdr_exco, hdr_exco
-      write(107, "(58X, *(A,8X, 1(A,6X),1(A,8X),1(A,6X),(A,2X),3(A,4X)4X))") &
-          hdr_exco_unt, hdr_exco_unt, hdr_exco_unt, hdr_exco_unt, hdr_exco_unt
       
       !! sum hru data
       bsn_area = 0.
@@ -48,8 +43,15 @@
       end do
       
       !! write basin output
-      write(107, "(A,(2(F)6X),(A,2X),(F,3X),*(F,6X))") bsn%name, bsn_area, precip_bsn, " - " ,&
-        bsn_hru_out(1), bsn_hru_out(2), bsn_hru_out(3), bsn_hru_out(4), bsn_hru_out(5)
+      write (107, *) ' BASIN   ', bsn%name, '   AREA HA   ', bsn_area
+      write (107,*) hdr_exco
+      write (107,*) hdr_exco_unt
+      write (107, *) ' PRECIPITATION  ', precip_bsn
+      write (107, *) ' TOTAL     ', bsn_hru_out(1)
+      write (107, *) ' PERCO     ', bsn_hru_out(2)
+      write (107, *) ' SURFACE   ', bsn_hru_out(3)
+      write (107, *) ' LATERAL   ', bsn_hru_out(4)
+      write (107, *) ' TILE      ', bsn_hru_out(5)
       
       close (107)
       
@@ -67,11 +69,13 @@
       end do
       
       !! write basin output
-      write (107,"(1(A8),21X,1(A16),19X,*(A24))") 'BASIN','TOTAL_LENGTH', bsn_cha
-      write (107,"(1(A8),25X,1(A2), 24X,(A18), 6X,*(A24))") '   ', 'KM', hdr_cha_unt, &
-          hdr_cha_unt, hdr_cha_unt, hdr_cha_unt
-      write(107, '(3X,1(A16), 1(F20.4), 16X, 32(F24.4))') bsn%name, ch_tot_length, &
-          bsn_ch_out%bank_ero, bsn_ch_out%bed_ero, bsn_ch_out%fp_dep, bsn_ch_out%bed_dep
+      write (107, *) ' BASIN   ', bsn%name, '   TOTAL_LENGTH KM ', ch_tot_length
+      write (107,*) hdr_cha
+      write (107,*) hdr_cha_unt
+      write (107, *) ' BANK_ERO  ', bsn_ch_out%bank_ero
+      write (107, *) ' BED_ERO   ', bsn_ch_out%bed_ero
+      write (107, *) ' FP_DEP    ', bsn_ch_out%fp_dep
+      write (107, *) ' BED_DEP   ', bsn_ch_out%bed_dep
       
       close (107)
       

@@ -99,6 +99,42 @@
             case ("ch_sinu")
               call cal_chg_par (cha1(ielem)%dat%sinu, chg_typ, chg_val, absmin, absmax)
         
+            case ("ch_cov")
+              call cal_chg_par (cha1(ielem)%dat%cov, chg_typ, chg_val, absmin, absmax)
+        
+            case ("ch_d50")
+              call cal_chg_par (cha1(ielem)%dat%d50, chg_typ, chg_val, absmin, absmax)
+        
+            case ("q1_qm")
+              call cal_chg_par (cha1(ielem)%sed%q1_qm, chg_typ, chg_val, absmin, absmax)
+        
+            case ("fp_inun_days")
+              call cal_chg_par (cha1(ielem)%sed%fp_inun_days, chg_typ, chg_val, absmin, absmax)
+        
+            case ("fp_flo_fr")
+              call cal_chg_par (cha1(ielem)%sed%fp_flo_fr, chg_typ, chg_val, absmin, absmax)
+        
+            case ("bank_nconc")
+              call cal_chg_par (cha1(ielem)%dat%ch_clay, chg_typ, chg_val, absmin, absmax)
+        
+            case ("bank_pconc")
+              call cal_chg_par (cha1(ielem)%dat%sinu, chg_typ, chg_val, absmin, absmax)
+        
+            case ("bank_pbio ")
+              call cal_chg_par (cha1(ielem)%dat%cov, chg_typ, chg_val, absmin, absmax)
+        
+            case ("ch_nsol_part")
+              call cal_chg_par (cha1(ielem)%dat%d50, chg_typ, chg_val, absmin, absmax)
+        
+            case ("ch_psol_part")
+              call cal_chg_par (cha1(ielem)%sed%q1_qm, chg_typ, chg_val, absmin, absmax)
+        
+            case ("n_dep_fr")
+              call cal_chg_par (cha1(ielem)%sed%fp_inun_days, chg_typ, chg_val, absmin, absmax)
+        
+            case ("p_dep_fr")
+              call cal_chg_par (cha1(ielem)%sed%fp_flo_fr, chg_typ, chg_val, absmin, absmax)
+        
             case ("res_pvol")
               call cal_chg_par (res1(ielem)%res_db%pvol, chg_typ, chg_val, absmin, absmax)
    

@@ -1,4 +1,4 @@
-﻿      module channel_module1
+      module channel_module1
     
       implicit none
 
@@ -12,7 +12,7 @@
         real :: chn = 0.        !           |channel Manning's n
         real :: chk = 0.        !mm/h       |channel bottom conductivity
         real :: cherod = 0.     !           |channel erodibility
-        real :: cov = 0.        !0-1        |channel cover factor
+        real :: cov = 0.        !0-4500     |channel tree cohesion factor
         real :: sinu            !none       |sinuousity - ratio of channel length and straight line length
         real :: chseq = 0.      !m/m        |equilibrium channel slope
         real :: d50 = 0.        !mm         |channel median sediment size
@@ -36,6 +36,10 @@
         real :: fp_flo_fr = 0.02    !frac       |fraction of annual flow that goes overbank
         real :: wd_yr = 0.3         !frac       |widths per year of channel widening
         real :: ch_fp_w_rto = 3.    !ratio      |channel/flood plain width ratio
+        real :: ch_nsol_part = 0.01 !frac       |instream nitrogen soluble to particulate transformation coefficient
+        real :: ch_psol_part = 0.01 !frac       |instream phosphorus soluble to particulate transformation coefficient
+        real :: n_dep_fr = 0.50     !frac       |fraction of nitrogen deposition during sediment deposition 
+        real :: p_dep_fr = 0.50     !frac       |fraction of nitrogen deposition during sediment deposition 
       end type channel_sediment_data
       
       type channel1
@@ -55,7 +59,9 @@
         real :: sum_fpdep = 0.      !mm     |flood plain deposition
         real :: wyr_mean = 0.       !       |mean widths per year
         real :: fpdep_mean = 0.     !mm     |mean flood plain deposition
+        real :: fparea = 0.         !mm     |mean flood plain area ***tu        
       end type calibration_by_stream_order
+      type (calibration_by_stream_order) :: cal_bso !****tu
       
       type calibration_gage_data
         character(len=25) :: name = ""
@@ -63,6 +69,7 @@
         real :: sum_wyr = 0.        !       |sum of widths per year 
         real :: sed_t = 0.          !tons   |average annual sediment wash load at the gage
       end type calibration_gage_data
+      type (calibration_gage_data) :: cal_out 
       
       type calibration_output
         type (calibration_by_stream_order), dimension(:), allocatable :: so1_3
@@ -72,7 +79,7 @@
         real :: res_trap = 0.       !       |mean reservoir trap efficiency
         type (calibration_gage_data), dimension(:), allocatable :: gage
       end type calibration_output
-      type (calibration_gage_data) :: cal_out !!!should this be type(calibration_output) instead
+      
  
       type sd_ch_output
         real :: flo_in = 0.             !(m^3/s)       |average daily inflow rate during time step
@@ -112,86 +119,28 @@
       type (sd_ch_output) :: bchsd_y
       type (sd_ch_output) :: bchsd_a
       type (sd_ch_output) :: chsdz
-      
-      type CH_INFLOW_out_header
-          character(len=22) :: INFLOW_flo          =  " INFLOW_flow           "        ! (m^3)
-          character(len=22) :: INFLOW_sed          =  " INFLOW_sediment       "        ! (tons)
-          character(len=22) :: INFLOW_orgn         =  " INFLOW_organic_n      "        ! (kg)          
-          character(len=22) :: INFLOW_orgp         =  " INFLOW_organic_p      "         ! (kg)         
-          character(len=22) :: INFLOW_no3          =  " INFLOW_nitrate_no3    "         ! (kg)
-          character(len=22) :: INFLOW_minp         =  " INFLOW_soluble_minp   "        ! (kg)          
-          character(len=22) :: INFLOW_nh3          =  " INFLOW_bedload        "          ! (tons)
-          character(len=22) :: INFLOW_no2          =  " INFLOW_null           "
-      end type CH_INFLOW_out_header
-      
-      type CH_OUTFLOW_out_header
-          character(len=22) :: OUTFLOW_flo         =  " OUTFLOW_flow          "        ! (m^3)
-          character(len=22) :: OUTFLOW_sed         =  " OUTFLOW_sediment      "        ! (tons)
-          character(len=22) :: OUTFLOW_orgn        =  " OUTFLOW_organic_n     "        ! (kg)          
-          character(len=22) :: OUTFLOW_orgp        =  " OUTFLOW_organic_p     "         ! (kg)         
-          character(len=22) :: OUTFLOW_no3         =  " OUTFLOW_nitrate_no3   "         ! (kg)
-          character(len=22) :: OUTFLOW_minp        =  " OUTFLOW_soluble_minp  "        ! (kg)          
-          character(len=22) :: OUTFLOW_nh3         =  " OUTFLOW_bedload       "          ! (tons)
-          character(len=22) :: OUTFLOW_no2         =  " OUTFLOW_null          "          ! (kg)
-      end type CH_OUTFLOW_out_header
-      
-      type CH_MAIN_out_header     
-          character(len=24) :: BANK_ERO_flo        =  " BANK_ERO_flow "        ! (m^3)
-          character(len=24) :: BANK_ERO_sed        =  " BANK_ERO_sediment "        ! (tons)
-          character(len=24) :: BANK_ERO_orgn       =  " BANK_ERO_organic_n "        ! (kg)          
-          character(len=24) :: BANK_ERO_orgp       =  " BANK_ERO_organic_p "         ! (kg)         
-          character(len=24) :: BANK_ERO_no3        =  " BANK_ERO_nitrate_no3 "         ! (kg)
-          character(len=24) :: BANK_ERO_minp       =  " BANK_ERO_soluble_minp "        ! (kg)          
-          character(len=24) :: BANK_ERO_nh3        =  " BANK_ERO_bedload "          ! (tons)
-          character(len=24) :: BANK_ERO_no2        =  " BANK_ERO_null "          ! (kg)
-          character(len=24) :: BED_ERO_flo        =  " BED_ERO_flow "        ! (m^3)
-          character(len=24) :: BED_ERO_sed        =  " BED_ERO_sediment "        ! (tons)
-          character(len=24) :: BED_ERO_orgn       =  " BED_ERO_organic_n "        ! (kg)          
-          character(len=24) :: BED_ERO_orgp       =  " BED_ERO_organic_p "         ! (kg)         
-          character(len=24) :: BED_ERO_no3        =  " BED_ERO_nitrate_no3 "         ! (kg)
-          character(len=24) :: BED_ERO_minp       =  " BED_ERO_soluble_minp "        ! (kg)          
-          character(len=24) :: BED_ERO_nh3        =  " BED_ERO_bedload "          ! (tons)
-          character(len=24) :: BED_ERO_no2        =  " BED_ERO_null "          ! (kg)
-          character(len=24) :: BED_DEP_flo        =  " BED_DEP_flow "        ! (m^3)
-          character(len=24) :: BED_DEP_sed        =  " BED_DEP_sediment "        ! (tons)
-          character(len=24) :: BED_DEP_orgn       =  " BED_DEP_organic_n "        ! (kg)          
-          character(len=24) :: BED_DEP_orgp       =  " BED_DEP_organic_p "         ! (kg)         
-          character(len=24) :: BED_DEP_no3        =  " BED_DEP_nitrate_no3 "         ! (kg)
-          character(len=24) :: BED_DEP_minp       =  " BED_DEP_soluble_minp "        ! (kg)          
-          character(len=24) :: BED_DEP_nh3        =  " BED_DEP_bedload "          ! (tons)
-          character(len=24) :: BED_DEP_no2        =  " BED_DEP_null "          ! (kg)
-          character(len=24) :: FP_DEP_flo        =  "   FP_DEP_DEP_flow "        ! (m^3)
-          character(len=24) :: FP_DEP_sed        =  "   FP_DEP_DEP_sediment "        ! (tons)
-          character(len=24) :: FP_DEP_orgn       =  "   FP_DEP_DEP_organic_n "        ! (kg)          
-          character(len=24) :: FP_DEP_orgp       =  "   FP_DEP_DEP_organic_p "         ! (kg)         
-          character(len=24) :: FP_DEP_no3        =  "   FP_DEP_DEP_nitrate_no3 "         ! (kg)
-          character(len=24) :: FP_DEP_minp       =  "   FP_DEP_DEP_soluble_minp "        ! (kg)          
-          character(len=24) :: FP_DEP_nh3        =  "   FP_DEP_DEP_bedload "          ! (tons)
-          character(len=24) :: FP_DEP_no2        =  "   FP_DEP_DEP_null"          ! (kg)
-      end type CH_MAIN_out_header
-      
             
-      type cha_header 
-        type (CH_INFLOW_out_header) :: CH_INFLOW_header
-        type (CH_OUTFLOW_out_header) :: CH_OUTFLOW_header
-        type (CH_MAIN_out_header) :: CH_MAIN_header
+      type cha_header      
+          character(len=16) :: flo        =  "            flow "        ! (m^3)
+          character(len=16) :: sed        =  "        sediment "        ! (tons)
+          character(len=16) :: orgn       =  "       organic_n "        ! (kg)          
+          character(len=15) :: orgp       =  "      organic_p "         ! (kg)         
+          character(len=15) :: no3        =  "    nitrate_no3 "         ! (kg)
+          character(len=15) :: minp       =  "    soluble_minp "        ! (kg)          
+          character(len=15) :: nh3        =  "       bedload "          ! (tons)
+          character(len=15) :: no2        =  "           null"          ! (kg)
       end type cha_header
       type (cha_header) :: hdr_cha
       
-      type basin_ch_header            
-          type (CH_MAIN_out_header) :: CH_MAIN_header
-      end type basin_ch_header
-      type (basin_ch_header) :: bsn_cha
-      
-     type cha_header_units
-          character(len=18) :: flo        =  "      m^3"        ! (m^3)
-          character(len=18) :: sed        =  "      tons"        ! (tons)
-          character(len=18) :: orgn       =  "      kg"        ! (kg)
-          character(len=18) :: orgp       =  "      kg"         ! (kg)
-          character(len=18) :: no3        =  "      kg"         ! (kg)       
-          character(len=18) :: minp       =  "      kg"         ! (kg)
-          character(len=18) :: nh3        =  "      tons"          ! (tons)    
-          character(len=18) :: no2        =  "      null"         ! (kg)
+     type cha_header_units        
+          character(len=16) :: flo        =  "             m^3"        ! (m^3)
+          character(len=16) :: sed        =  "            tons"        ! (tons)
+          character(len=16) :: orgn       =  "              kg"        ! (kg)
+          character(len=15) :: orgp       =  "             kg"         ! (kg)
+          character(len=15) :: no3        =  "             kg"         ! (kg)       
+          character(len=15) :: minp       =  "             kg"         ! (kg)
+          character(len=15) :: nh3        =  "          tons"          ! (tons)    
+          character(len=15) :: no2        =  "           null"         ! (kg)
       end type cha_header_units
       type (cha_header_units) :: hdr_cha_unt
       

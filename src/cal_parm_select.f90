@@ -1,4 +1,4 @@
-      subroutine cal_parm_select (parm, chg_parm, chg_typ, chg_val, absmin, absmax)
+      subroutine cal_parm_select (parm, chg_typ, chg_val, absmin, absmax)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine finds the current paramter value based on 
@@ -28,8 +28,7 @@
       
       implicit none
  
-      real, intent (in out) :: parm
-      character(len=16), intent (in) :: chg_parm            !!!                |      
+      real, intent (in out) :: parm                         !                |      
       character(len=16), intent (in) :: chg_typ             !variable        |type of change (absval, abschg, pctchg)
       real, intent (in) :: chg_val                          !                |      
       real, intent (in) :: absmin                           !                |minimum range for variable 
