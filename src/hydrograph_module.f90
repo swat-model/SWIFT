@@ -2,6 +2,7 @@
       
       implicit none
       
+      character(len=80) :: prog                                          ! dynamic header variable
       integer :: mhyd                                                    !none          |max number of hydrographs
       integer :: mcmd                                                    !              |
       integer :: inum2                                                   !none          |inflow hydrograph storage location number

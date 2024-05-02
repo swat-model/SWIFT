@@ -45,6 +45,7 @@
       ob(iob)%hd(1)%no3 = ob(iob)%hin%no3
       ob(iob)%hd(1)%solp = ob(iob)%hin%solp
       
+      write (1977,*) bsn%name, prog
       write (1977, *) ires, res1(ires)%name, res1(ires)%area_ha
       write (1977, *) ' INFLOW    ', ob(iob)%hin
       write (1977, *) ' OUTFLOW   ', ob(iob)%hd(1)
