@@ -24,8 +24,7 @@
 
       !! open hru.dat file
       open (107,file = "lsu_ex.out",recl=1200)
-      write (107,*) bsn%name, prog
-      !write(107, "(2(A4,16X),(A6,13X),(A1,4X),(A20),(*(A20:1X)))") lsu_header, iob_header
+      write (107,*) '  LANDSCAPE UNIT OUTPUT  '
       write (107,*) '  HEADERS '  !HEADERS - NUBZ
       
       !! sum lsu data
@@ -40,9 +39,8 @@
             lsu_ex(iob)%hyd(ipro) = lsu_ex(iob)%hyd(ipro) + lsu_elem(ihru)%ru_frac * ob(ihru)%hd(ipro)
           end do
         end do
-        !write(107, "(A,(2(F)2X),(I,2X),(F,3X),*(F,6X))") lsu_out(iob)%name,lsu_area,precip_lsu,iob, &
-            !lsu_ex(iob)%hyd(1), lsu_ex(iob)%hyd(2), lsu_ex(iob)%hyd(3), lsu_ex(iob)%hyd(4), lsu_ex(iob)%hyd(5)
-	write (107, *) ' LSU   ', lsu_out(iob)%name, '   AREA HA   ', lsu_area
+        
+        write (107, *) ' LSU   ', lsu_out(iob)%name, '   AREA HA   ', lsu_area
         write (107, *) ' PRECIPITATION  ', precip_lsu
         write (107, *) ' LSU       ', iob
         write (107, *) ' TOTAL     ', lsu_ex(iob)%hyd(1)

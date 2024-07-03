@@ -201,7 +201,7 @@
           case ("chandeg")  !swatdeg channel
             isdch = ob(icmd)%num
             isd_chsur = ob(icmd)%props2
-            call cha_control1 (icmd, sp_ob%chandeg)
+            call cha_control1 (icmd)
           end select
 
         !set the next command

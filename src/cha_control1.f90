@@ -1,4 +1,4 @@
-      subroutine cha_control1 (iob, num_cha)
+      subroutine cha_control1 (iob)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine controls the simulation of the land phase of the 
@@ -9,7 +9,7 @@
       
       implicit none
 
-      integer,  intent (in) :: iob, num_cha
+      integer,  intent (in) :: iob
       integer :: icha                   !none       |channel number
       integer :: icha_db                !none       |channel data pointer
       integer :: idr                    !none       |pointer to instream delivery ratio
@@ -63,7 +63,6 @@
       real :: q_sed_ppm                 !ppm        |bed transport - ppm
       real :: q_sed                     !t/day      |sediment bed erosion per unit width
       real :: conc_chng                 !frac       |change in concentration of instream nutrient transformations
-      real :: avg_wyr                   !mm???      |average bank width per year for basin
       
       icha = ob(iob)%num
       icha_db = ob(iob)%props
@@ -95,34 +94,17 @@
       !else
         n_mann = cha1(icha)%dat%chn
       !end if
-        
-      !!!!-tu check and assign value if %dat%chs is 0   
-      !if (cha1(icha)%dat%chs < .00001) then 
-      !    cha1(icha)%dat%chs = .00001
-      !!!!end if  
-        
       !vel = hyd_rad ** .6666 * Sqrt(cha1(icha)%dat%chs) / (n_mann + 0.0001)
       vel = cha1(icha)%sed%q1_qm * ob(iob)%hin%flo / xarea / 86400.
       qcms = xarea * vel
       !! try qcms = q1 --> qcms = q1/qm * qm
       !qcms = cha1(icha)%sed%q1_qm * ob(iob)%hin%flo / 365.
       
-      !!!!-tu cha1(icha)%dat%ch_clay over 65 giving floating point error quick fix
-      !if (cha1(icha)%dat%ch_clay > 65) then
-      !    cha1(icha)%dat%ch_clay = 65
-      !!!!end if
-      
       !! calculate bank erosion
       !b_exp = 5.53 / (1. + exp(-29.11 + 1.8 * cha1(icha)%dat%ch_clay)) ** 0.0248
       b_exp = 12.3 / sqrt (cha1(icha)%dat%ch_clay)
       b_exp = min (3.5, b_exp)
       !vel = 1.37 * (cha1(icha)%dat%chs ** 0.31) * (12. * cha1(icha)%dat%chw) ** 0.32
-      
-      !!!!-tufloating point error fix
-      !if (cha1(icha)%dat%sinu == 0.0000000E+00) then 
-      !  cha1(icha)%dat%sinu = 1.0
-      !!!!end if
-      
       rad_curv = (12. * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
                                        (13. * (cha1(icha)%dat%sinu - 0.999) ** 0.5)
       !vel_bend = vel * (1.74 - 0.52 * log10 (rad_curv / cha1(icha)%dat%chw))
@@ -135,12 +117,6 @@
       cohesion = (15. / (15.3 - 0.438 * cha1(icha)%dat%ch_clay + 0.0044 * cha1(icha)%dat%ch_clay ** 2.)) * 1000.
       cohesion = amax1 (1000., cohesion)    !min 1000 for sandy soils
       veg = exp (-5. * cha1(icha)%dat%chd) * cha1(icha)%dat%cov                              !function of cover factor
-      
-      !!!!-tu check and assign value if %dat%ch_bd is <1 prevents floating error
-      !if (cha1(icha)%dat%ch_bd < 1.) then 
-      !    cha1(icha)%dat%ch_bd = 1.
-      !!!!end if
-      
       vel_crit = log10 (8.8 * cha1(icha)%dat%chd / 0.004) * (0.0004 * ((cha1(icha)%dat%ch_bd *     &
                         1000. - 1000.) * 9.81 * 0.004 + 0.021 * cohesion + veg)) ** 0.5
       e_days = 3.65     !assume 1% of time (q1 flows)
@@ -174,7 +150,7 @@
       !! check if > incoming sediment
       if (ebtm_t * e_days > ob(iob)%hin%sed + ob(iob)%hin%nh3) then
         cha1(icha)%dat%d50_sub = 20.
-        vel_crit_bd = 0.293 * (cha1(icha)%dat%d50_sub) ** 0.5
+        vel_crit_bd = 0.293 !* (cha1(icha)%dat%sd_ch1(ich)) ** 0.5
         if (vel_tot > vel_crit_bd) then
           !! downcutting of bottom sub surface (below deposited sand)
           e_days = 1.825    !assume Q0.5 does downcutting
@@ -228,8 +204,17 @@
       !! sediment leaving channel
       ob(iob)%hd(1) = ob(iob)%hin + cha2(icha)%bank_ero + cha2(icha)%bed_ero - cha2(icha)%fp_dep + cha2(icha)%trans
          
-      write (1979,'(I4,22X, (A25),1(F22.4),48(F22.4))') icha, cha1(icha)%name, cha1(icha)%area_ha, ob(iob)%hin, ob(iob)%hd(1), &
-          cha2(icha)%bank_ero, cha2(icha)%bed_ero, cha2(icha)%bed_dep, cha2(icha)%fp_dep
+      write (1979, *) ' number ', icha, ' name ', cha1(icha)%name, ' area_ha ', cha1(icha)%area_ha
+      write (1979, *) 'INFLOW   ', ob(iob)%hin
+      write (1979, *) 'OUTFLOW  ', ob(iob)%hd(1)
+      write (1979, *) 'BANK_ERO ', cha2(icha)%bank_ero
+      write (1979, *) 'BED_ERO  ', cha2(icha)%bed_ero
+      write (1979, *) 'BED_DEP ', cha2(icha)%bed_dep
+      write (1979, *) 'FP_DEP   ', cha2(icha)%fp_dep
+      
+      write (1979, *) icha, cha1(icha)%name, cha1(icha)%area_ha, ob(iob)%hin, ob(iob)%hd(1), cha2(icha)%bank_ero,  &
+          cha2(icha)%bed_dep, cha2(icha)%fp_dep
+      
       !! bank parameter output
       w_yr = ebank_m / cha1(icha)%dat%chw
       write (1988, *) icha, cha1(icha)%name, cha1(icha)%area_ha, cha1(icha)%dat%chw, cha1(icha)%dat%chl,    &
@@ -258,14 +243,16 @@
       !  cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
       !  cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
       !end if
-      
-      !!!! chan wyr and fp dep sums
-      cal_bso%sum_wyr = cal_bso%sum_wyr + w_yr
-      avg_wyr = cal_bso%sum_wyr / num_cha
-      cal_bso%sum_fpdep = cal_bso%sum_fpdep + fpdepo_mm ! mm
-      cal_bso%fparea = cal_bso%fparea +  (cha1(icha)%dat%chl * fpwidth_km * 5) !km
-      cal_bso%fpdep_mean =  cal_bso%sum_fpdep / cal_bso%fparea
-      
+      !if (cha1(icha)%dat%order <= 3) then
+      !  cal_out%so1_3%num_cha = cal_out%so1_3%num_cha + 1
+      !  cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
+      !  cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
+      !end if
+      !if (cha1(icha)%dat%order <= 3) then
+      !  cal_out%so1_3%num_cha = cal_out%so1_3%num_cha + 1
+      !  cal_out%so1_3%sum_wyr = cal_out%so1_3%sum_wyr + w_yr
+      !  cal_out%so1_3%sum_fpdep = cal_out%so1_3%sum_fpdep + fpdepo_mm
+      !end if
       
       return
       end subroutine cha_control1

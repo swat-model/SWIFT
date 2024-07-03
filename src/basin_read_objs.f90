@@ -17,9 +17,8 @@
       integer :: npsu                 !            |
       integer :: isp                  !            |counter
       integer :: eof                  !            |end of file
-      logical :: i_exist              !            |check to determine if file exists 
-      ! needed to access dir above SWIFT
-      call initialize_paths
+      logical :: i_exist              !            |check to determine if file exists
+      
       eof = 0
       
       !! read number of spatial objects from obj_connect.dat

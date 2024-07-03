@@ -65,8 +65,6 @@
       rcv_sum = 0
       dfn_sum = 0
       ru_seq = 0
-      ! needed to access dir above SWIFT
-      call initialize_paths
       
       !! set first object number of each type
       nspu = 1
@@ -502,7 +500,6 @@
       !! write calculated and input drainage areas for all objects except hru's
       !! the following file is for debugging purposes
       open (9002,file="drareas.out",recl = 8000)
-      write (9002,*) bsn%name, prog
       do iob = 1, sp_ob%objs
         if (ob(iob)%typ /= "hru" .and. ob(iob)%typ /= "ru") then
         !!! write to diagnostics.out file

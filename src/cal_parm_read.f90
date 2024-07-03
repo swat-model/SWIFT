@@ -20,7 +20,6 @@
             
       imax = 0
       mchg_par = 0
-      
         
       !!read parameter change values for calibration
       inquire (file="cal_parms.cal", exist=i_exist)
