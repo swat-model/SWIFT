@@ -37,7 +37,16 @@
          if (eof < 0) exit
       end do
       end if
-
-      close (107)     
+      close (107)   
+      
+      !! read root_path.cio
+       inquire (file="root_path.swf", exist=i_exist)
+       if (i_exist ) then
+           nam%used = .TRUE.
+         open (107,file="root_path.swf")
+         read (107,*) nam%root_dir
+         end if
+      close (107)
+      
       return
       end subroutine readcio_read  

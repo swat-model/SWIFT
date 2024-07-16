@@ -17,10 +17,8 @@
       integer :: npsu                 !            |
       integer :: isp                  !            |counter
       integer :: eof                  !            |end of file
-      logical :: i_exist              !            |check to determine if file exists
-      
-      eof = 0
-      
+      logical :: i_exist              !            |check to determine if file exists 
+
       !! read number of spatial objects from obj_connect.dat
       inquire (file=in_basin%object_cnt, exist=i_exist)
       if (.not. i_exist .or. in_basin%object_cnt == "null") then

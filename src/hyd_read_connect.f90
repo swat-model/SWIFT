@@ -22,7 +22,7 @@
       integer :: eof                  !           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
       logical :: i_exist              !none       |check to determine if file exists
-      character (len=16) ::con_file   !           |
+      character (len=100) ::con_file   !           |
       character (len=3) :: ihtyp      !           |
       character (len=8) :: obtyp      !           |
       integer :: isp                  !none       |counter

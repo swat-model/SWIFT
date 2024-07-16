@@ -1,22 +1,22 @@
-      program main
+program main
 
-      use hydrograph_module !, only : prog
+      use hydrograph_module, only : prog
 
       implicit none
       
       integer :: date_time(8)           !              |
       character*10 b(3)                 !              |
-      character (len=80) :: prog
+      !character (len=80) :: prog
       
-      !prog = " SWIFT Feb 14 2022    MODULAR Rev 2022.1"
-      prog = " SWIFT Jan 18 2023    MODULAR Rev 2023.1"
+      
+      prog = " SWIFT+ Jul 16 2024        MODULAR Rev 2024.v1.0-6-g0e1430c"
 
       write (*,1000)
       open (9003,file='simulation.out')
       write (9003,1000)
-1000  format(1x,"                  SWIFT               ",/,             &
-     &          "             Revision 1.0             ",/,             &
-     &          "               PC Version             ",/,             &
+1000 format(1x,"                  SWIFT+               ",/,             &
+     &          "             Revision v1.0-6-g0e1430c  ",/,             &
+     &          "IntelLLVM (2024.1.0), 2024-07-16 10:44:31, Windows",/,             &
      &          "    Program reading . . . executing",/)
       
       !! find critical shear for Peter

@@ -2,6 +2,7 @@
       
       implicit none
       
+      character(len=80) :: prog                                          ! dynamic header variable
       integer :: mhyd                                                    !none          |max number of hydrographs
       integer :: mcmd                                                    !              |
       integer :: inum2                                                   !none          |inflow hydrograph storage location number
@@ -299,6 +300,92 @@
         character (len=15) :: temp =    "           null"        !! deg c        |temperature
       end type hyd_header
       type (hyd_header) :: hyd_hdr
+      
+      type hyd_header2                                       
+        character (len=16) :: flo  =    " flo            "        !! m^3           |volume of water
+        character (len=16) :: sed  =    " sed            "        !! metric tons   |sediment
+        character (len=16) :: orgn =    " orgn           "        !! kg_N          |organic N
+        character (len=16) :: sedp =    " sedp           "        !! kg_P          |organic P
+        character (len=16) :: no3  =    " no3            "        !! kg_N          |NO3-N
+        character (len=16) :: solp =    " solp           "        !! kg_P          |mineral (soluble P)
+        character (len=16) :: nh3  =    " nh3            "        !! kg_N          |NH3
+        character (len=16) :: no2  =    " no2            "        !! kg_N          |NO2
+      end type hyd_header2
+      type (hyd_header2) :: hyd_hdr2
+                  
+      type hyd_header_units        
+        character(len=16) :: flo   =    " m^3            "         ! (m^3)
+        character(len=16) :: sed   =    " t/ha           "         ! (t/ha)
+        character(len=16) :: orgn  =    " kg/ha          "         ! (kg)
+        character(len=16) :: orgp  =    " kg/ha          "         ! (kg)
+        character(len=16) :: no3   =    " kg/ha          "         ! (kg)       
+        character(len=16) :: minp  =    " kg/ha          "         ! (kg)
+        character(len=16) :: nh3   =    " kg/ha          "         ! (kg)    
+        character(len=16) :: no2   =    " null           "         ! (kg)
+      end type hyd_header_units
+      type (hyd_header_units) :: hyd_hdr_unt
+            
+      type :: hydcon_header
+        character(len=20)   :: iob        =     " iob"          !! na   | Spatial object number
+        character(len=20)   :: typ        =     " type"         !! na   | Object type
+        character(len=20)   :: num        =     " num"          !! na   | Spatial object number
+        character(len=20)   :: area       =     " area"         !! ha   | Input drainage area in hectares
+        character(len=20)   :: area_calc  =     " area_calc"    !! ha   | Calculated drainage area in hectares 
+        character(len=20)   :: rcv_tot    =     " rcv_tot"      !! na   | Total number of incoming (receiving) hydrographs
+      end type hydcon_header
+      type (hydcon_header) ::hydcon_hdr
+      
+      type :: hydcon_in_header  
+        character(len=20)   :: obtyp      =     " Inflow_typ"   !! na   | Inflow object type
+        character(len=20)   :: typ_num    =     " In_num"       !! na   | Inflow object
+        character(len=20)   :: obj_in     =     " In_iob"       !! na   | Inflow iob
+        character(len=20)   :: frac_in    =     " frac_in"      !! na   | Fraction of inflow hydrograph
+        character(len=20)   :: area       =     " area"         !! ha   | Input drainage area in hectares
+        character(len=20)   :: area_calc  =     " area_calc"    !! ha   | Calculated drainage area in hectares 
+      end type hydcon_in_header
+      type (hydcon_in_header) ::hydcon_in_hdr
+      
+      type :: hydcon_header_units
+        character(len=20)   :: iob        =     " na"           !! na   |Spatial object number
+        character(len=20)   :: typ        =     " na"           !! na   |Object type
+        character(len=20)   :: num        =     " na"           !! ha   |Spatial object number
+        character(len=20)   :: area       =     " ha"           !! na   |Input drainage area in hectares
+        character(len=20)   :: area_calc  =     " ha"           !! ha   |Calculated drainage area in hectares (for checking)
+        character(len=20)   :: rcv_tot    =     " na"           !! na   |Total number of incoming (receiving) hydrographs
+      end type hydcon_header_units
+      type (hydcon_header_units) ::hydcon_hdr_units
+      
+      type :: obj_header  
+        character(len=16)   :: num        =     " num           "     !! na   | object name   
+        character(len=16)   :: name       =     " name          "     !! na   | object type
+        character(len=16)   :: area       =     " area          "     !! ha   | area_ha
+        character(len=16)   :: inflow     =     " INFLOW        "     !! na   | Inflow
+        character(len=16)   :: outflow    =     " OUTFLOW       "     !! na   | Outflow
+        character(len=16)   :: bank       =     " BANK          "     !! na   | BANK
+        character(len=16)   :: bed        =     " BED           "     !! na   | BED
+        character(len=16)   :: bed_dep    =     " BED_DEP       "     !! na   | BED_DEP
+        character(len=16)   :: fp_dep     =     " FP_DEP        "     !! na   | FP_DEP
+      end type obj_header
+      type (obj_header) ::obj_hdr
+      
+      type :: obj_header2  
+        character(len=16)   :: name   =         " name"         !! na   | object name   
+        character(len=16)   :: typ    =         " typ"          !! na   | object type
+        character(len=16)   :: rcv_tot    =     " rcv_tot"      !! na   | recieving hydrograph total
+        character(len=16)   :: src_tot    =     " src_tot"      !! na   | src hydrograph total
+        character(len=16)   :: frac_in    =     " frac_in"      !! na   | fraction of hydrograph
+      end type obj_header2
+      type (obj_header2) ::obj_hdr2
+      
+      type :: obj_header3  
+        character(len=16)   :: TOTAL        =       " TOTAL"        !! na   | TOTAL   
+        character(len=16)   :: PERCO        =       " PERCO"        !! na   | PERCO
+        character(len=16)   :: SURFACE      =       " SURFACE"      !! na   | SURFACE
+        character(len=16)   :: LATERAL      =       " LATERAL"      !! na   | LATERAL
+        character(len=16)   :: TILE         =       " TILE"         !! na   | TILE
+      end type obj_header3
+      type (obj_header3) ::obj_hdr3
+    
       
       interface operator (+)
         module procedure hydout_add

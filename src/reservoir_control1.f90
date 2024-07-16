@@ -19,6 +19,8 @@
       real :: precip_m3                 !m3         |precipitation on reservoir surface
       real :: evap_m3                   !m3         |evaporation from reservoir surface
       
+      300   format((I4,4x1A,1F16.4),*(8x,1a16,8G16.4,2x))
+      
       ires = ob(iob)%num
       ires_db = ob(iob)%props
       iwst = ob(iob)%wst
@@ -45,10 +47,10 @@
       ob(iob)%hd(1)%no3 = ob(iob)%hin%no3
       ob(iob)%hd(1)%solp = ob(iob)%hin%solp
       
-      write (1977, *) ires, res1(ires)%name, res1(ires)%area_ha
-      write (1977, *) ' INFLOW    ', ob(iob)%hin
-      write (1977, *) ' OUTFLOW   ', ob(iob)%hd(1)
       
+      write (1977, 300) ires, res1(ires)%name, res1(ires)%area_ha,  &
+          ' INFLOW     ', ob(iob)%hin,                              &
+          ' OUTFLOW    ', ob(iob)%hd(1)
 !!    res_flo.out file
       write (1987,*) ires, res1(ires), ob(iob)%hin%flo, residence, trap_eff
       

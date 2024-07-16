@@ -14,18 +14,25 @@
       integer :: iob            !none       |object counter
       integer :: ihru_db        !none       |number of hru data
       integer :: ipro           !none       |number of process (total runoff,surf,perc,lat,tile)
-      !integer :: iwst           !none       |precip gage number
+      !integer :: iwst          !none       |precip gage number
       integer :: i, k           !none       |variables used to set data number
       integer :: iostat, eof
       real :: lsu_area
       real :: precip_lsu
-      logical :: i_exist        !none       |check to determine if file exists
-      character (len=80) :: titldum   !           |title of file
 
+      200   format((2xA4,1x1A5,15x1A5,10xA16),5(1a16,6x,8a16))                              !header format
+      300   format((I4,4x1A,2F16.4),2x,5(1a16,8G16.4,6x))                                   !data format
+      
       !! open hru.dat file
       open (107,file = "lsu_ex.out",recl=1200)
-      write (107,*) '  LANDSCAPE UNIT OUTPUT  '
-      write (107,*) '  HEADERS '  !HEADERS - NUBZ
+      write (107,*) bsn%name, prog                                                          !write file name
+      write (107, 200) obj_hdr%num, obj_hdr%name,  &                                        !write header
+          obj_hdr%area, ' PRECIPITATION  ', &
+          ' TOTAL      ', hdr_exco, ' PERCO      ', hdr_exco, &
+          ' SURFACE    ', hdr_exco, ' LATERAL    ', hdr_exco, &
+          ' TILE       ', hdr_exco
+      write (107, 200) " --  ", " --  ", " ha  "," --  ",   &                               !write header units
+          ('---        ', hdr_exco_unt,    i = 1, 5)     
       
       !! sum lsu data
       do iob = 1, db_mx%lsu_out
@@ -40,15 +47,15 @@
           end do
         end do
         
-        write (107, *) ' LSU   ', lsu_out(iob)%name, '   AREA HA   ', lsu_area
-        write (107, *) ' PRECIPITATION  ', precip_lsu
-        write (107, *) ' LSU       ', iob
-        write (107, *) ' TOTAL     ', lsu_ex(iob)%hyd(1)
-        write (107, *) ' PERCO     ', lsu_ex(iob)%hyd(2)
-        write (107, *) ' SURFACE   ', lsu_ex(iob)%hyd(3)
-        write (107, *) ' LATERAL   ', lsu_ex(iob)%hyd(4)
-        write (107, *) ' TILE      ', lsu_ex(iob)%hyd(5)
+        
+	  write (107, 300) iob, lsu_out(iob)%name, lsu_area, precip_lsu, &
+        ' TOTAL      ', lsu_ex(iob)%hyd(1), &
+        ' PERCO      ', lsu_ex(iob)%hyd(2), &
+        ' SURFACE    ', lsu_ex(iob)%hyd(3), &
+        ' LATERAL    ', lsu_ex(iob)%hyd(4), &
+        ' TILE       ', lsu_ex(iob)%hyd(5)
       end do
+      
       
       close (107)
       

@@ -31,7 +31,7 @@
       do ihru = 1, sp_ob%hru
         read (107,*,iostat=eof) i
         if (eof < 0) exit
-        !backspace (107)
+        backspace (107)
         !! read from the aquifer database file named aquifer.aqu
         read (107,*,iostat=eof) k, hru_dat(i)%name, hru_dat(i)%lum, hru_dat(i)%slope,   &
                              hru_dat(i)%hsg, hru_dat(i)%surf_stor, hru_dat(i)%dr

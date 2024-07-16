@@ -44,6 +44,7 @@
             
       sum = 0.
       
+      300   format((I4,4x1A,10x1F16.4),7x,5(1a16,8G16.4,10x))
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
@@ -195,13 +196,13 @@
             
           case ("outlet")  !outlet
             ob(icmd)%hd(1) = ob(icmd)%hin
-            write (1981, *) ob(icmd)%props, ob(icmd)%name, ob(icmd)%area_ha
-            write (1981, *) ' INFLOW    ', ob(iob)%hin
+            write (1981, 300) ob(icmd)%props, ob(icmd)%name, ob(icmd)%area_ha,  &
+                ' INFLOW     ', ob(iob)%hin
               
           case ("chandeg")  !swatdeg channel
             isdch = ob(icmd)%num
             isd_chsur = ob(icmd)%props2
-            call cha_control1 (icmd)
+            call cha_control1 (icmd, sp_ob%chandeg)
           end select
 
         !set the next command
@@ -211,20 +212,23 @@
               
         !print all hydrographs
         do icmd = 1, sp_ob%objs
-          write (1983,*) ob(icmd)%name, ob(icmd)%typ, ob(icmd)%rcv_tot, ob(icmd)%src_tot
+          write (1983,"((A16),3x(A8),2(I4,12x))") ob(icmd)%name, ob(icmd)%typ,  &
+              ob(icmd)%rcv_tot, ob(icmd)%src_tot
         
           !print all inflow hydrographs
           do iin = 1, ob(icmd)%rcv_tot
-             write (1983,*) "  in ", ob(icmd)%obtyp_in(iin), ob(icmd)%obtypno_in(iin), ob(icmd)%htyp_in(iin),         &
-               ob(icmd)%frac_in(iin), ob(icmd)%hin_d(iin)
+             write (1983,"(56XA4,9xA8,5xI4,11xA3,7x,*(G16.4,2x))") "in ",       &
+                 ob(icmd)%obtyp_in(iin), ob(icmd)%obtypno_in(iin),              &
+                 ob(icmd)%htyp_in(iin), ob(icmd)%frac_in(iin), ob(icmd)%hin_d(iin)
           end do
              
           !print all outflow hydrographs
           do iout = 1, ob(icmd)%src_tot
             ihtyp = ob(icmd)%ihtyp_out(iout)
             ht1 = ob(icmd)%frac_out(iout) * ob(icmd)%hd(ihtyp)
-            write (1983,*) "  out ", ob(icmd)%obtyp_out(iout), ob(icmd)%obtypno_out(iout), ob(icmd)%htyp_out(iout),   &
-              ob(icmd)%frac_out(iout), ht1
+            write (1983,"(56XA4,9xA8,5xI4,11xA3,7x,*(G16.4,2x))") "out ",       &
+                ob(icmd)%obtyp_out(iout), ob(icmd)%obtypno_out(iout),           &
+                ob(icmd)%htyp_out(iout), ob(icmd)%frac_out(iout), ht1
           end do
         end do
         

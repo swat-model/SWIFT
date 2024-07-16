@@ -17,8 +17,10 @@
       
       ihru = ob(iob)%props
       
-      write (1980, *) ihru, hru_dat(ihru)%name, hru_dat(ihru)%area_ha, hru_dat(iob)%precip, hru_dat(ihru)%lum, &
-                             hru_dat(ihru)%hsg, hru_dat(ihru)%surf_stor, hru_dat(ihru)%dr
+      write (1980, '(*(G16.4))') 'ihru: ',ihru, 'name: ', hru_dat(ihru)%name,       &
+          'area_ha: ', hru_dat(ihru)%area_ha, 'precip: ',hru_dat(iob)%precip,       &
+          'lum: ', hru_dat(ihru)%lum, 'hsg: ', hru_dat(ihru)%hsg,                   &
+          'surf_stor: ', hru_dat(ihru)%surf_stor, 'dr: ',hru_dat(ihru)%dr
       
       !! if routing over the hru, add the runon/runoff
       if (hru_dat(ihru)%dr == "y") then

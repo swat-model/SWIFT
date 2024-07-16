@@ -11,9 +11,10 @@
  
       character (len=80) :: titldum   !           |title of file
       character (len=80) :: header    !           |header of file
-      character(len=16) :: rec_name
+      character (len=80) :: obj_count    !        |2nd dummy header of file
+      character(len=24) :: rec_name
       character(len=8) :: rec_typ
-      character(len=16) :: rec_filename
+      character(len=255) :: rec_filename
       integer :: imax                 !none       |end of loop
       integer :: iyr                  !           |
       integer :: jday                 !           |
@@ -34,56 +35,81 @@
       integer :: ifirst               !           |
       integer :: iexo_allo = 0
       integer :: idaystep
+      character(len=255) :: recall_path
       
-      eof = 0
-      imax = 0
-
-      !read all recall files
-      inquire (file=in_rec%recall_rec, exist=i_exist)
+ 
+      !! read all recall files
+      inquire(file=in_rec%recall_rec, exist=i_exist)
       if (i_exist .or. in_rec%recall_rec /= "null") then
-      do
-        open (107,file=in_rec%recall_rec)
-        read (107,*,iostat=eof) titldum
-        if (eof < 0) exit
-        read (107,*,iostat=eof) header
-        if (eof < 0) exit
+        open(107, file=in_rec%recall_rec)
+        read(107, *, iostat=eof) header
+        if (eof < 0) then
+          close(107)
+          return
+        endif
+
         imax = 0
-          do while (eof == 0)
-            read (107,*,iostat=eof) i
-            if (eof < 0) exit
-            imax = Max(imax,i) 
-          end do
-          db_mx%recall_max = imax
-          
-      allocate (recall(0:imax))
-      
-      rewind (107)
-      read (107,*,iostat=eof) titldum
-      if (eof < 0) exit
-      read (107,*,iostat=eof) header
-      if (eof < 0) exit
-      
-      do ii = 1, imax
-        read (107,*,iostat=eof) i
-        if (eof < 0) exit
-        backspace (107)
-        read (107,*,iostat = eof) k, rec_name, rec_typ, rec_filename
-        if (eof < 0) exit
-           
-        open (108,file = rec_filename)
-        read (108,*,iostat=eof) titldum
-        if (eof < 0) exit
-        read (108,*,iostat=eof) header
-        if (eof < 0) exit
-        read (108,*,iostat=eof) recall(i)
-         
-        close (108)
-      end do
-      
-      close (107)
-      exit
-      enddo
+        do while (eof == 0)
+          read(107, *, iostat=eof) i
+          if (eof < 0) then
+            exit
+          endif
+          imax = max(imax, i)
+        end do
+        db_mx%recall_max = imax
+    
+        allocate(recall(0:imax))
+    
+        rewind(107)
+        read(107, *, iostat=eof) header
+        if (eof < 0) then
+          close(107)
+          return
+        endif
+    
+        do ii = 1, imax
+          read(107, *, iostat=eof) i
+          if (eof < 0) then
+            exit
+          endif
+          backspace(107)
+          read(107, *, iostat=eof) k, rec_name, rec_typ, rec_filename
+          if (eof < 0) then
+            exit
+          endif
+          if (rec_typ == '1' .AND. nam%used == .TRUE.) then                                                             !!check if the file is a recall typ is 1 and swift_nam flag is true
+            rec_filename = trim(rec_filename)
+            recall_path = trim(nam%root_dir) // "\\" // rec_filename(4:11) // "\\" // "SWIFT" // "\\" // rec_filename   !!get the path of the recall file in the root directory
+            ! Check if recall_path exists
+          inquire(file=recall_path, exist=i_exist)
+          if (i_exist) then
+            open(108, file=recall_path)
+            read(108, *, iostat=eof) titldum
+            if (eof < 0) then
+              close(108)
+              exit
+            endif
+            read(108, *, iostat=eof) iyr, jday, mo, day_mo, rec_typ, rec_name, recall(i)
+            close(108)
+          else
+            ! Handle the case where recall_path does not exist
+            print *, "Error: Recall file does not exist at path: ", recall_path
+            exit
+          endif
+        else                                                                                                            !!else read recall files as normal                                            
+        open(108, file=trim(rec_filename))
+        read(108, *, iostat=eof) titldum
+        if (eof < 0) then
+          close(108)
+          exit
+        endif
+        read(108, *, iostat=eof) iyr, jday, mo, day_mo, rec_typ, rec_name, recall(i)
+        close(108)
       endif
-      
-      return
-      end subroutine recall_read
+    end do
+    close(107)
+  endif
+  
+  return
+end subroutine recall_read
+    

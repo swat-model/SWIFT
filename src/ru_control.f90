@@ -29,6 +29,8 @@
       integer :: iru
       real :: ef                         !            |
       integer :: ipest                   !            |
+      
+      300   format((I4,4x1A,10x1F16.4),7x,5(1a16,8G16.4,10x)) 
            
       iru = ob(iob)%props
       
@@ -116,15 +118,14 @@
 
       end do  !element loop
       
-      
-      !! Routing Unit Output
-      write (1982, *) ob(iob)%props, ob(iob)%name, ob(iob)%area_ha
-      !! Routing Unit Output
-      write (1982, *) ' TOTAL     ', ob(iob)%hd(1)
-      write (1982, *) ' PERCO     ', ob(iob)%hd(2)
-      write (1982, *) ' SURFACE   ', ob(iob)%hd(3)
-      write (1982, *) ' LATERAL   ', ob(iob)%hd(4)
-      write (1982, *) ' TILE      ', ob(iob)%hd(5)
+
+      !! Routing Unit Output61
+      write (1982, 300) ob(iob)%props, ob(iob)%name, ob(iob)%area_ha, &
+        ' TOTAL      ', ob(iob)%hd(1),  &
+        ' PERCO      ', ob(iob)%hd(2),  &
+        ' SURFACE    ', ob(iob)%hd(3),  &
+        ' LATERAL    ', ob(iob)%hd(4),  &
+        ' TILE       ', ob(iob)%hd(5)
         
 	  return
 

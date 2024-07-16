@@ -66,6 +66,9 @@
       dfn_sum = 0
       ru_seq = 0
       
+     200   format((6XA8),(A5),(14XA),2(A),(*(A))4X)                             !format for writing to drareas.out header
+     300   format((I,3X),((A)),(I),2(8XF16.4),6X(I),14X(A),(*(G16.6,6x)))   !format for writing to drareas.out file
+          
       !! set first object number of each type
       nspu = 1
       if (sp_ob%hru > 0) then         ! 1==hru
@@ -174,6 +177,9 @@
       !read connect file for outlet
       if (sp_ob%outlet > 0) then
         call hyd_read_connect(in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, hd_tot%outlet, 1)
+      end if
+      if (sp_ob%recall > 0) then
+        call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 1)
       end if
 
       !! for each hru or defining unit, set all subbasins that contain it 
@@ -495,23 +501,32 @@
           end if
         end do
         iord = iord + 1
-      end do
+    end do
       
       !! write calculated and input drainage areas for all objects except hru's
       !! the following file is for debugging purposes
+      
       open (9002,file="drareas.out",recl = 8000)
+      write (9002,*) bsn%name, prog
+      write(9002, 200) hydcon_hdr, hydcon_in_hdr, "          ",             &
+          hydcon_in_hdr, "          ", hydcon_in_hdr
+      write(9002, 200) hydcon_hdr_units, hydcon_hdr_units, "          ",    &
+          hydcon_hdr_units, "          ", hydcon_hdr_units
       do iob = 1, sp_ob%objs
         if (ob(iob)%typ /= "hru" .and. ob(iob)%typ /= "ru") then
+       
         !!! write to diagnostics.out file
         !  write (9001, *) iob, ob(iob)%typ, ob(iob)%num, ob(iob)%area_ha, ob(iob)%area_ha_calc,             &
         !    ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj), ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj),             &
         !    ob(iob)%frac_in(jj), &
         !    ob(ob(iob)%obj_in(jj))%area_ha, ob(ob(iob)%obj_in(jj))%area_ha_calc, jj = 1, ob(iob)%rcv_tot)
         !!! write to drareas.out file
-          write (9002, *) iob, ob(iob)%typ, ob(iob)%num, ob(iob)%area_ha, ob(iob)%area_ha_calc,             &
+            
+          write(9002, 300)                           &
+          iob, ob(iob)%typ, ob(iob)%num, ob(iob)%area_ha, ob(iob)%area_ha_calc,                             &
             ob(iob)%rcv_tot, (ob(iob)%obtyp_in(jj), ob(iob)%obtypno_in(jj), ob(iob)%obj_in(jj),             &
-            ob(iob)%frac_in(jj), &
-            ob(ob(iob)%obj_in(jj))%area_ha, ob(ob(iob)%obj_in(jj))%area_ha_calc, jj = 1, ob(iob)%rcv_tot)
+            ob(iob)%frac_in(jj),ob(ob(iob)%obj_in(jj))%area_ha, ob(ob(iob)%obj_in(jj))%area_ha_calc,  &
+            jj = 1, ob(iob)%rcv_tot)
         end if 
       end do
       
