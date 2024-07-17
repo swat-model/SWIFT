@@ -104,6 +104,7 @@
       end if  
         
       !vel = hyd_rad ** .6666 * Sqrt(cha1(icha)%dat%chs) / (n_mann + 0.0001)
+      ob(iob)%hin%flo = Max (0., ob(iob)%hin%flo)
       vel = cha1(icha)%sed%q1_qm * ob(iob)%hin%flo / xarea / 86400.
       qcms = xarea * vel
       !! try qcms = q1 --> qcms = q1/qm * qm
@@ -116,14 +117,11 @@
       
       !! calculate bank erosion
       !b_exp = 5.53 / (1. + exp(-29.11 + 1.8 * cha1(icha)%dat%ch_clay)) ** 0.0248
-      b_exp = 12.3 / sqrt (cha1(icha)%dat%ch_clay)
+      b_exp = 12.3 / sqrt (cha1(icha)%dat%ch_clay + 1.)
       b_exp = min (3.5, b_exp)
       !vel = 1.37 * (cha1(icha)%dat%chs ** 0.31) * (12. * cha1(icha)%dat%chw) ** 0.32
       
-      !!!!-tufloating point error fix
-      !if (cha1(icha)%dat%sinu == 0.0000000E+00) then 
-      !  cha1(icha)%dat%sinu = 1.0
-      !!!!end if
+      cha1(icha)%dat%sinu = Max (1.0, cha1(icha)%dat%sinu)
       
       rad_curv = (12. * cha1(icha)%dat%chw * cha1(icha)%dat%sinu ** 1.5) /        &
                                        (13. * (cha1(icha)%dat%sinu - 0.999) ** 0.5)
@@ -159,6 +157,12 @@
       !! assume 20% is sand and the remainder is washload - need to make a function of d50 or input sand in bank
       cha2(icha)%bank_ero%sed = 0.8 * ebank_t
       cha2(icha)%bank_ero%nh3 = 0.2 * ebank_t       !using nh3 for bedload
+      !! calculate bank erosion associated nutrients - ppm
+      cha2(icha)%bank_ero%orgn = cha2(icha)%bank_ero%sed * cha1(icha)%dat%n_conc
+      cha2(icha)%bank_ero%sedp = (1. - cha1(icha)%dat%p_bio) * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
+      cha2(icha)%bank_ero%no3 = 0.
+      cha2(icha)%bank_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
+      cha2(icha)%bank_ero%no2 = 0.
       
       !! assume sand in bank is deposited and rest is washload
       
@@ -194,7 +198,7 @@
       !! assume particle size = 0.03 mm -- median silt size
       d_part = 0.002
       vel_fall = 411. * d_part ** 2     ! m/h
-      ttime = cha1(icha)%dat%chl / (3.6 * vel)      !km / m/s * 1000m/km * h/3600s
+      ttime = cha1(icha)%dat%chl / (3.6 * (vel + 0.01))      !km / m/s * 1000m/km * h/3600s
       dep_fall = vel_fall * ttime
       !! assume bankfull flow depth
       if (dep_fall < cha1(icha)%dat%chd) then
@@ -211,15 +215,18 @@
       cha2(icha)%ch_rout = cha_dr(icha)%instr_dr ** (ch_flo * ob(iob)%hin)
       
       !! calculate in channel nutrient transformations
-      ttime = cha1(icha)%dat%chl / (3.6 * vel)      !hr = km/(3.6*m/s)
-      conc_chng = 1. - exp(cha1(icha)%sed%ch_nsol_part * ttime)
+      ttime = cha1(icha)%dat%chl / (3.6 * (vel + 0.01))      !hr = km/(3.6*m/s)
+      ttime = Min (24., ttime)
+      conc_chng = 1. - exp(-cha1(icha)%sed%ch_nsol_part * ttime)
       cha2(icha)%trans%no3 = -conc_chng * ob(iob)%hin%no3
-      cha2(icha)%trans%orgn = cha2(icha)%trans%no3
-      conc_chng = 1. - exp(cha1(icha)%sed%ch_psol_part * ttime)
+      !cha2(icha)%trans%no3 = Max (cha2(icha)%trans%no3, ob(iob)%hin%orgn)
+      cha2(icha)%trans%orgn = -cha2(icha)%trans%no3
+      conc_chng = 1. - exp(-cha1(icha)%sed%ch_psol_part * ttime)
       cha2(icha)%trans%solp = -conc_chng * ob(iob)%hin%solp
-      cha2(icha)%trans%sedp = cha2(icha)%trans%solp
+      !cha2(icha)%trans%solp = Max (cha2(icha)%trans%solp, cha2(icha)%trans%sedp)
+      cha2(icha)%trans%sedp = -cha2(icha)%trans%solp
       
-      !! calculate associated nutrients - ppm
+      !! calculate bed erosion associated nutrients - ppm
       cha2(icha)%bed_ero%orgn = cha2(icha)%bed_ero%sed * cha1(icha)%dat%n_conc
       cha2(icha)%bed_ero%sedp = (1. - cha1(icha)%dat%p_bio) * cha2(icha)%bed_ero%sed * cha1(icha)%dat%p_conc
       cha2(icha)%bed_ero%no3 = 0.
