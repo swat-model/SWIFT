@@ -7,15 +7,16 @@
       use constituent_mass_module
       use maximum_data_module
  
-      character (len=80) :: titldum, header
-      integer :: eof, imax, ob1, ob2
-      logical :: i_exist              !none       |check to determine if file exists
-
-      eof = 0
-      imax = 0
+      character (len=80) :: titldum = ""    !!na    |dummy title
+      character (len=80) :: header  = ""    !!na    |dummy header
+      integer :: eof                = 0     !!na    |end of file
+      integer :: imax               = 0     !!na    |maximum number of data
+      integer :: ob1                = 0     !!na    |object start index
+      integer :: ob2                = 0     !!na    |object end index
+      logical :: i_exist                    !!na    |check to determine if file exists
       
-      !read all delivery ratio data
-      inquire (file=in_delr%pest, exist=i_exist)
+      !!- inquire if dr_path.del exist and read all delivery ratio data !*** possible typo changed to delr%path from %pest
+      inquire (file=in_delr%path, exist=i_exist)
       if (i_exist .or. in_delr%path /= "null") then
         do
           open (107,file=in_delr%path)
@@ -31,7 +32,7 @@
           end do
           
           db_mx%dr_path = imax
-          
+          !!-- allocate dr_path objects
           allocate (dr_path(imax))
           do idr_path = 1, imax
             allocate (dr_path(idr_path)%path(cs_db%num_paths))
@@ -44,7 +45,7 @@
           read (107,*,iostat=eof) header
           if (eof < 0) exit
       
-          !read all delivery ratio data
+          !!-- read all delivery ratio data
           do ii = 1, db_mx%dr_path
             read (107,*,iostat=eof) titldum
             if (eof < 0) exit
@@ -57,7 +58,7 @@
         end do
       end if
                   
-      ! xwalk with dr file to get sequential number
+      !!- xwalk with dr file to get sequential number
       do idr = 1, db_mx%dr
         do idr_path = 1, db_mx%dr_path
           if (dr_db(idr)%path_file == dr_path_name(idr_path)) then
@@ -67,7 +68,7 @@
         end do
       end do
       
-      !set dr object hydrograph
+      !!- set dr object hydrograph
       ob1 = sp_ob1%dr
       ob2 = sp_ob1%dr + sp_ob%dr - 1
       do iob = ob1, ob2

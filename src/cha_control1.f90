@@ -157,11 +157,11 @@
       !! assume 20% is sand and the remainder is washload - need to make a function of d50 or input sand in bank
       cha2(icha)%bank_ero%sed = 0.8 * ebank_t
       cha2(icha)%bank_ero%nh3 = 0.2 * ebank_t       !using nh3 for bedload
-      !! calculate bank erosion associated nutrients - ppm
-      cha2(icha)%bank_ero%orgn = cha2(icha)%bank_ero%sed * cha1(icha)%dat%n_conc
-      cha2(icha)%bank_ero%sedp = (1. - cha1(icha)%dat%p_bio) * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
+       !! calculate bank erosion associated nutrients - ppm
+      cha2(icha)%bank_ero%orgn = cha2(icha)%bank_ero%sed * cha1(icha)%dat%n_conc / 1000.
+      cha2(icha)%bank_ero%sedp = (1. - cha1(icha)%dat%p_bio) * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc / 1000.
       cha2(icha)%bank_ero%no3 = 0.
-      cha2(icha)%bank_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc
+      cha2(icha)%bank_ero%solp = cha1(icha)%dat%p_bio * cha2(icha)%bank_ero%sed * cha1(icha)%dat%p_conc / 1000.
       cha2(icha)%bank_ero%no2 = 0.
       
       !! assume sand in bank is deposited and rest is washload

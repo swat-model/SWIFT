@@ -12,20 +12,21 @@
       
       implicit none
       
-      character (len=80) :: titldum   !            |title of file
-      character (len=80) :: header    !            |header
-      integer :: npsu                 !            |
-      integer :: isp                  !            |counter
-      integer :: eof                  !            |end of file
-      logical :: i_exist              !            |check to determine if file exists 
+      character (len=80) :: titldum = ""        !! na           |title of file
+      character (len=80) :: header  = ""        !! na           |header
+      !integer :: npsu                          !!              |number of subbasins
+      integer :: isp                = 0         !! na           |counter
+      integer :: eof                = 0         !! na           |end of file
+      logical :: i_exist                        !! na           |check to determine if file exists 
 
-      !! read number of spatial objects from obj_connect.dat
+      !!- check to see if the object.cnt exists
       inquire (file=in_basin%object_cnt, exist=i_exist)
       if (.not. i_exist .or. in_basin%object_cnt == "null") then
           allocate (ob(0:0))
           allocate (obcs(0:0))
           allocate (obom(0:0))
       else
+      !!- if object.cnt does exist, read in the number of spatial objects 
       do
         open (107,file=in_basin%object_cnt)
         read (107,*,iostat=eof) titldum
@@ -38,6 +39,7 @@
       endif
 
       close (107)
+      !!- allocate the objects
       allocate (ob(sp_ob%objs))
       allocate (obcs(sp_ob%objs))
       allocate (obom(sp_ob%objs))

@@ -1,7 +1,7 @@
       module channel_module1
     
       implicit none
-
+      
       type channel_data1
         character(len=16) :: name
         integer :: order

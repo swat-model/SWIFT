@@ -8,16 +8,16 @@
       
       implicit none
 
-      character (len=80) :: titldum   !           |title of file
-      character (len=80) :: header    !           |header of file
-      integer :: eof                  !           |end of file
+      character (len=80) :: titldum   !! na           |title of file
+      character (len=80) :: header    !! na           |header of file
+      integer :: eof                  !! na           |end of file
       integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      integer :: nspu                 !           |
+      integer :: nspu                 !! na           |number of subbasin parameters
       logical :: i_exist              !none       |check to determine if file exists
-      integer :: mcal                 !           |
+      integer :: mcal                 !! na           |number of calibration parameters
       integer :: mlsu                 !none       |counter
       integer :: i                    !none       |counter
-      integer :: k                    !           |
+      integer :: k                    !! na           |counter
       integer :: isp                  !none       |counter
       integer :: ielem1               !none       |counter
       integer :: ii                   !none       |counter
@@ -26,7 +26,7 @@
       imax = 0
       mcal = 0
             
-    !! read landscape cataloging unit definitions for output (old subbasin output file)
+    !!- read landscape cataloging unit definitions for output (old subbasin output file)
     inquire (file=in_lsu%def_lsu, exist=i_exist)
     if (i_exist .or. in_lsu%def_lsu /= "null") then
       do
@@ -38,28 +38,30 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         
-        !allocate subbasin (landscape unit) inputs and outputs
+        !!allocate subbasin (landscape unit) inputs and outputs
         allocate (lsu_out(mlsu))
         allocate (lsu_ex(mlsu))
-        
+	   
       do i = 1, mlsu
-
+!!- read data for each landscape cataloging unit
         read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu      
         if (eof < 0) exit
         if (nspu > 0) then
+!! allocate subbasin parameters
           allocate (elem_cnt(nspu))
           backspace (107)
           read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
-
+!! call define_unit_elements 
           call define_unit_elements (nspu, ielem1)
+		  !! 
           allocate (lsu_out(i)%num(ielem1))
           lsu_out(i)%num = defunit_num
           lsu_out(i)%num_tot = ielem1
           deallocate (defunit_num)
         else
           allocate (lsu_out(i)%num(0:0))
-          !!all hrus are in region 
+          !all hrus are in region 
           !allocate (lsu_out(i)%num(sp_ob%hru))
           !lsu_out(i)%num_tot = sp_ob%hru
           !do iihru = 1, sp_ob%hru
@@ -75,7 +77,7 @@
       end do 
     end if	  
 
-      !!read data for each element in all landscape cataloging units
+      !!- read data for each element in all landscape cataloging units
       inquire (file=in_lsu%ele_lsu, exist=i_exist)
       if (i_exist .or. in_lsu%ele_lsu /= "null") then
       do
@@ -90,7 +92,7 @@
               if (eof < 0) exit
               imax = Max(i,imax)
           end do
-
+!!-- allocate landscape unit elements
         allocate (lsu_elem(imax))
 
         rewind (107)

@@ -15,6 +15,7 @@
       character(len=24) :: rec_name
       character(len=8) :: rec_typ
       character(len=255) :: rec_filename
+	  character(len=255) :: recall_path
       integer :: imax                 !none       |end of loop
       integer :: iyr                  !           |
       integer :: jday                 !           |
@@ -35,7 +36,8 @@
       integer :: ifirst               !           |
       integer :: iexo_allo = 0
       integer :: idaystep
-      character(len=255) :: recall_path
+	  integer :: icon
+      
       
  
       !! read all recall files
@@ -76,28 +78,40 @@
           read(107, *, iostat=eof) k, rec_name, rec_typ, rec_filename
           if (eof < 0) then
             exit
-          endif
-          if (rec_typ == '1' .AND. nam%used == .TRUE.) then                                                             !!check if the file is a recall typ is 1 and swift_nam flag is true
-            rec_filename = trim(rec_filename)
-            recall_path = trim(nam%root_dir) // "\\" // rec_filename(4:11) // "\\" // "SWIFT" // "\\" // rec_filename   !!get the path of the recall file in the root directory
-            ! Check if recall_path exists
-          inquire(file=recall_path, exist=i_exist)
-          if (i_exist) then
-            open(108, file=recall_path)
+		  endif
+		  !!check if the file is a recall typ is 1 and swift_nam flag is true
+          if (rec_typ == '1' .AND. nam%used == .TRUE.) then                                                             
+            open(108, file=trim(rec_filename))
             read(108, *, iostat=eof) titldum
             if (eof < 0) then
               close(108)
               exit
-            endif
-            read(108, *, iostat=eof) iyr, jday, mo, day_mo, rec_typ, rec_name, recall(i)
-            close(108)
-          else
+			endif
+			! read file to get rec_name; i.e. *_con.out
+			read(108, *, iostat=eof) iyr, jday, mo, day_mo, rec_typ, rec_name
+			close(108)
+			! construct the path to the recall file; root_dir\HUC8\SWIFT\*_con.out
+            recall_path = trim(nam%root_dir) // "\\" // trim(rec_name(:8)) // "\\" // "SWIFT" // "\\" // rec_name   
+            !Check if recall_path exists
+            inquire(file=recall_path, exist=i_exist)
+                if (i_exist) then
+					open(109, file=trim(recall_path))
+					read(109, *, iostat=eof) titldum
+					read(109, *, iostat=eof) titldum
+					if (eof < 0) then
+                        close(108)
+                        exit
+					endif
+					! read in to get recall(i)
+					read(109, *, iostat=eof) rec_name, icon, rec_typ, recall(i)
+					close(109)
+                else
             ! Handle the case where recall_path does not exist
-            print *, "Error: Recall file does not exist at path: ", recall_path
-            exit
-          endif
-        else                                                                                                            !!else read recall files as normal                                            
-        open(108, file=trim(rec_filename))
+                    print *, "Error: Recall file does not exist at path: ", recall_path
+                exit
+				endif
+		    ! else read recall files as normal           
+        else                                                                                                            
         read(108, *, iostat=eof) titldum
         if (eof < 0) then
           close(108)

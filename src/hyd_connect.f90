@@ -12,53 +12,53 @@
       
       implicit none
       
-      character (len=80) :: titldum   !           |title of file
-      character (len=80) :: header    !           |header of file
-      character (len=16) :: namedum   !           |
-      integer :: eof                  !           |end of file
-      integer :: imax                 !none       |determine max number for array (imax) and total number in file
-      character (len=3) :: iob_out    !           !object type out
-      character (len=3) :: iobtyp     !none       |object type
-      character (len=3) :: ihtyp      !           |
-      integer :: nspu                 !           |
-      integer :: iru
-      integer :: cmdno                !           |
-      integer :: idone                !           | 
+      character (len=80) :: titldum   !!na           |title of file
+      character (len=80) :: header    !!na           |header of file
+      character (len=16) :: namedum   !!na           |
+      integer :: eof                  !!na           |end of file
+      integer :: imax                 !none			 |determine max number for array (imax) and total number in file
+      character (len=3) :: iob_out    !!na            |object type out
+      character (len=3) :: iobtyp     !!none          |object type
+      character (len=3) :: ihtyp      !!na            |hyd type
+      integer :: nspu                 !!na            |number of source objects
+      integer :: iru				  !!na            |routing unit number`
+      integer :: cmdno                !!na           |command number
+      integer :: idone                !!na           |done flag
       !integer :: hydno
-      integer :: cmd_prev             !           |
-      integer :: ob1                  !none       |beginning of loop
-      integer :: ob2                  !none       |ending of loop
-      integer :: iobj_tot             !           |
-      real ::mexco_sp                 !           |
-      integer :: i                    !none       |counter
-      integer :: ii                   !none       |counter
-      integer :: ielem                !none       |counter 
-      integer :: k                    !none       |counter
-      integer :: iob                  !           |
-      integer :: kk                   !none       |counter
-      integer :: j                    !           |
-      integer :: ielem_db             !           |
-      integer :: jj                   !none       |counter
-      integer :: iord                 !none       |counter
-      integer :: isrc_tot             !           |
-      integer :: iorder               !           |
-      integer :: ircv                 !none       |counter
-      integer :: ircv_ob              !           |
-      integer :: max                  !           |
-      integer :: ipath
-      integer :: ihmet
-      integer :: isalt
-      integer :: npests
-      integer :: npaths
-      integer :: nmetals
-      integer :: nsalts
+      integer :: cmd_prev             !!na           |previous command number
+      integer :: ob1                  !!none       |beginning of loop
+      integer :: ob2                  !!none       |ending of loop
+      integer :: iobj_tot            !!none       |total number of objects
+      real ::mexco_sp                 !!none       |max export coefficient
+      integer :: i                    !!none       |counter object number of source object
+      integer :: ii                   !!none       |counter sequential source number
+      integer :: ielem                !!none       |counter element in sub_element
+      integer :: k                    !!none       |counter
+      integer :: iob                  !!none       |counter
+      integer :: kk                   !!none       |counter object number of outflow object 
+      integer :: j                    !!none       |counter
+      integer :: ielem_db             !!none       |counter element in database
+      integer :: jj                   !!none       |counter seqential receiving number
+      integer :: iord                 !!none       |counter for order
+      integer :: isrc_tot             !!none       |total number of sources
+      integer :: iorder               !!none       |order of object
+      integer :: ircv                 !!none       |sequential inflow number
+      integer :: ircv_ob              !!none       |receiving object
+      integer :: max                  !!none       |max number of objects
+      integer :: ipath                  !!none       |path number
+      integer :: ihmet                  !!none       |metal number
+      integer :: isalt              !!none       |salt number
+      integer :: npests             !!none       |number of pesticides
+      integer :: npaths             !!none       |number of pathways
+      integer :: nmetals                !!none       |number of metals
+      integer :: nsalts             !!none       |number of salts
       
       
       eof = 0
       imax = 0
       mexco_sp = 0
       cmd_prev = 0
-
+!!- allocate arrays for summing and setting object numbers
       allocate (rcv_sum(sp_ob%objs))
       allocate (dfn_sum(sp_ob%objs))
       allocate (ru_seq(sp_ob%objs))
@@ -69,7 +69,7 @@
      200   format((6XA8),(A5),(14XA),2(A),(*(A))4X)                             !format for writing to drareas.out header
      300   format((I,3X),((A)),(I),2(8XF16.4),6X(I),14X(A),(*(G16.6,6x)))   !format for writing to drareas.out file
           
-      !! set first object number of each type
+      !!- set first object number of each type
       nspu = 1
       if (sp_ob%hru > 0) then         ! 1==hru
         sp_ob1%hru = nspu
@@ -123,21 +123,22 @@
         sp_ob1%outlet = nspu
         nspu = sp_ob%outlet + nspu
       end if
-      if (sp_ob%chandeg > 0) then     ! 16==swat-deg channel
+      if (sp_ob%chandeg > 0) then     ! 16==SWIFT-deg channel
         sp_ob1%chandeg = nspu
         nspu = sp_ob%chandeg + nspu
-      end if
+	  end if
 !      if (sp_ob%a2d > 0) then        ! 17==2D aquifer
 !        sp_ob1%a2d = nspu
 !        nspu = sp_ob%a2d + nspu
 !      end if
+!!- read all connect files for each object type, call hyd_read_connect
 
-      !read connect file for hrus
       if (sp_ob%hru > 0) then
         call hyd_read_connect(in_con%hru_con, "hru     ", sp_ob1%hru, sp_ob%hru, hd_tot%hru, 1)     
-      end if
+	  end if
 
       !read connect file for routing units
+	  !!-- if ru then also call ru_read_elements
       if (sp_ob%ru > 0) then
         call hyd_read_connect(in_con%ru_con, "ru      ", sp_ob1%ru, sp_ob%ru, hd_tot%ru, 1)
         call ru_read_elements
@@ -153,7 +154,7 @@
         call hyd_read_connect(in_con%chan_con, "chan    ", sp_ob1%chan, sp_ob%chan, hd_tot%chan, 1)
       end if
                        
-      !read connect file for swat-deg channels
+      !read connect file for SWIFT-deg channels
       if (sp_ob%chandeg > 0) then
         call hyd_read_connect(in_con%chan_con, "chandeg ", sp_ob1%chandeg, sp_ob%chandeg, hd_tot%chandeg, 1)
       end if
@@ -182,7 +183,7 @@
         call hyd_read_connect(in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 1)
       end if
 
-      !! for each hru or defining unit, set all subbasins that contain it 
+      !!- for each hru or defining unit, set all subbasins that contain it 
         do i = 1, sp_ob%objs
           nspu = ob(i)%ru_tot
           if (nspu > 0) then
@@ -191,9 +192,9 @@
         end do
 
         do iru = 1, sp_ob%ru
-          !! determine subbasin the hrus are in and add subbasin area to basin area
+          !!- determine subbasin the hrus are in and add subbasin area to basin area
           do ii = 1, ru_def(iru)%num_tot
-            !!only have hrus set up - need to add other objects
+            !!@todo only have hrus set up - need to add other objects
             ielem = ru_def(iru)%num(ii)        !points to element in sub_element
             k = ru_elem(ielem)%obj              !object type number of element (ie hru)
             iob = sp_ob1%ru + iru - 1         !object number of the routing unit
@@ -204,7 +205,7 @@
           end do
         end do
       
-      !! determine number of recieving units and set object numbers for outflow hyds
+      !!- determine number of recieving units and set object numbers for outflow hyds
         do i = 1, sp_ob%objs
           do ii = 1, ob(i)%src_tot
             iob_out = ob(i)%obtyp_out(ii)          !object type out
@@ -236,7 +237,7 @@
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
             case ("cha")   !channel
-              !! all channels receive flow from modflow
+              !! For case "cha", all channels receive flow from modflow
               if (ob(i)%typ == "modflow" .and. ob(i)%obtypno_out(ii) <= 0) then
                 do ich = 1, sp_ob%chan
                   ob(i)%obj_out(ii) = sp_ob1%chan + ich - 1
@@ -264,7 +265,7 @@
               ob(i)%obj_out(ii) = sp_ob1%outlet + ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
-            case ("sdc")   !swat-deg channel
+            case ("sdc")   !SWIFT-deg channel
               ob(i)%obj_out(ii) = sp_ob1%chandeg+ob(i)%obtypno_out(ii) - 1
               j = ob(i)%obj_out(ii)
               ob(j)%rcv_tot = ob(j)%rcv_tot + 1
@@ -285,7 +286,7 @@
           end do
         end do
 
-      !! allocate zero arrays for constituents
+      !!- allocate zero arrays for constituents
       allocate (hin_csz%pest(cs_db%num_pests))
       allocate (hin_csz%path(cs_db%num_paths))
       allocate (hin_csz%hmet(cs_db%num_metals))
@@ -306,7 +307,7 @@
       hin_csz%hmet = 0.
       hin_csz%salt = 0.
 
-      !! allocate receiving arrays
+      !!- allocate receiving arrays
       do i = 1, sp_ob%objs
         if (ob(i)%rcv_tot > 0) then
           nspu = ob(i)%rcv_tot
@@ -328,10 +329,10 @@
         end if
       end do
 
-      !! loop through again and set receiving dependencies 
+      !!- loop through again and set receiving dependencies 
       do i = 1, sp_ob%objs                                  ! i=object number of source object
         do ii = 1, ob(i)%src_tot                            ! ii=sequential source number
-          !! if modflow object and set for all channels
+          !!-- if modflow object and set for all channels
           if (ob(i)%obtyp_out(ii) == "cha" .and. ob(i)%obtypno_out(ii) <= 0) then
             !! set all incoming channel object data to modflow
             do ich = 1, sp_ob%chan
@@ -343,8 +344,9 @@
               ob(kk)%htyp_in(jj) = ob(i)%htyp_out(ii)
               ob(kk)%ihtyp_in(jj) = ob(i)%ihtyp_out(ii)
               ob(kk)%frac_in(jj) = ob(i)%frac_out(ii)
-            end do
-          else
+			end do
+			!!-- else set for all other objects
+          else 
             kk = ob(i)%obj_out(ii)                          ! kk=object number of outflow object
             rcv_sum(kk) = rcv_sum(kk) + 1                   ! setting sequential receiving hyd number
             jj = rcv_sum(kk)                                ! jj=seqential receiving number
@@ -375,7 +377,7 @@
         end do
       end do
 
-      !! loop through again to set command (object) sequence
+      !!- loop through again to set command (object) sequence
       cmdno = 0
       idone = 0
       iobj_tot = 0
@@ -400,8 +402,7 @@
           call exit(1)
         end if 
    
-          !check if all incoming and defining objects have been met
-          !if not sum incoming 
+          !!-- check if all incoming and defining objects have been met if not sum incoming 
           if (rcv_sum(i) == ob(i)%rcv_tot .and.                        & 
                                       dfn_sum(i) == ob(i)%dfn_tot) then
             if (ob(i)%fired == 0) then
@@ -425,10 +426,10 @@
                     !end if
                   end if
                 end do
-                    
-            iobj_tot = iobj_tot + 1    ! check to see if all objects are done
+			!! check to see if all objects are done
+            iobj_tot = iobj_tot + 1    
             if (iobj_tot == sp_ob%objs) idone = 1
-            !sum defining units for each subbasin
+            !! sum defining units for each subbasin
             do k = 1, ob(i)%ru_tot
               dfn_sum(ob(i)%obj_subs(k)) = dfn_sum(ob(i)%obj_subs(k)) + 1
               !kk = ob(i)%obj_subs(k)       !ob number of subbasin
@@ -437,7 +438,7 @@
           
             isrc_tot = Max(ob(i)%src_tot, 1)  !force to go through once
             do ii = 1, isrc_tot
-              !! add receiving object for single objects
+              !!-- add receiving object for single objects
               if (ob(i)%src_tot > 0) then
                 if (ob(i)%obtypno_out(ii) > 0) then
                   k = ob(i)%obj_out(ii)
@@ -453,7 +454,7 @@
                   end if
                 end if
               else
-                !! modflow - for all inflow objects
+                !!-- modflow - for all inflow objects
                 if (ob(i)%typ == "modflow") then
                   iobtyp = ob(i)%obtyp_out(ii)
                   !! add recieving for all channels from modflow
@@ -467,17 +468,17 @@
                 end if
               end if
               
-              !! compute object order for parallelization (similar to stream order)
+              !!-- compute object order for parallelization (similar to stream order)
               if (ob(i)%rcv_tot == 0 .and. ob(i)%typ /= "ru") then
                 ob(i)%cmd_order = 1
               else
                 iorder = 0
-                !! compute object order of highest receiving object and add 1
+                !!-- compute object order of highest receiving object and add 1
                 do ircv = 1, ob(i)%rcv_tot
                   ircv_ob = ob(i)%obj_in(ircv)
                   iorder = Max (iorder, ob(ircv_ob)%cmd_order)
                 end do
-                !! subbasin has to be in parallel order after elements in the subbasin 
+                !!-- subbasin has to be in parallel order after elements in the subbasin 
                 if (ob(i)%typ == "ru" .and. ob(i)%rcv_tot == 0) then
                   iorder = 1
                 end if
@@ -503,10 +504,10 @@
         iord = iord + 1
     end do
       
-      !! write calculated and input drainage areas for all objects except hru's
-      !! the following file is for debugging purposes
+      !!-- write calculated and input drainage areas for all objects except hru's
+      ! the following file is for debugging purposes
       
-      open (9002,file="drareas.out",recl = 8000)
+      open (9002,file="drareas.out",recl = 24000)
       write (9002,*) bsn%name, prog
       write(9002, 200) hydcon_hdr, hydcon_in_hdr, "          ",             &
           hydcon_in_hdr, "          ", hydcon_in_hdr

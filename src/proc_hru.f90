@@ -17,6 +17,7 @@
       real :: runoff_mm
       logical :: i_exist        !none       |check to determine if file exists
       character (len=80) :: titldum   !           |title of file
+      character(len=32)  :: hru_category !           |hru category in hru_exco used to skip over dummy names in one line format
 
       !! open hru.dat file
       open (107,file = in_hru%hru_dat,recl=1200)
@@ -48,19 +49,30 @@
       
       allocate (hru_ex(sp_ob%hru))
       
-      !! read hru data
-      do ihru = 1, sp_ob%hru
-        read (107,*,iostat=eof) i
-        if (eof < 0) exit
+      !! read hru data *** tu old hru_exco object format
+      !do ihru = 1, sp_ob%hru
+      !  read (107,*,iostat=eof) i
+      !  if (eof < 0) exit
         !backspace (107)
         !! read loadings from each process 
-          do ipro = 1, 5
-            read (107,*,iostat=eof) hru_ex(i)%runoff(ipro)
-          end do
-        if (eof < 0) exit
+      !    do ipro = 1, 5
+      !      read (107,*,iostat=eof) hru_ex(i)%runoff(ipro)
+      !    end do
+      !  if (eof < 0) exit
+      !end do
+      !close (107)
+      
+      !! read hru data *** tu new hru_exco one line format 
+      do ihru = 1, sp_ob%hru
+      read (107,*,iostat=eof) i, &
+        (hru_category, hru_ex(i)%runoff(ipro)%flo, hru_ex(i)%runoff(ipro)%sed, &
+         hru_ex(i)%runoff(ipro)%orgn, hru_ex(i)%runoff(ipro)%sedp, hru_ex(i)%runoff(ipro)%no3,&
+         hru_ex(i)%runoff(ipro)%solp, hru_ex(i)%runoff(ipro)%nh3, hru_ex(i)%runoff(ipro)%no2, ipro = 1, 5)
+      if (eof < 0) exit
       end do
       close (107)
-        
+
+            
       !! set hru data to proper input data
       do iob = 1, sp_ob%hru
         ihru = ob(iob)%props
