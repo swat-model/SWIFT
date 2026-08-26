@@ -13,6 +13,20 @@ authors:
     affiliation: >-
       Grassland Soil and Water Research Laboratory, USDA
       Agricultural Research Service (ARS)
+  - given-names: Mohamed
+    family-names: Fawzy Mahmoud
+    email: M.Fawzy.Mahmoud@colostate.edu
+    affiliation: >-
+      Colorado State University
+      Department of Civil and Environmental Engineering, USA
+    orcid: 'https://orcid.org/0009-0009-0812-8280'
+  - given-names: Michael J.
+    family-names: White
+    email: mike.white2@usda.gov
+    affiliation: >-
+      Grassland Soil and Water Research Laboratory, USDA
+      Agricultural Research Service (ARS)
+    orcid: 'https://orcid.org/0000-0002-1641-0077'
   - given-names: Natalja
     family-names: Čerkasova
     email: natalja.cerkasova@gmail.com
@@ -21,13 +35,6 @@ authors:
       Agrilife Research, USA; Klaipeda University, Marine
       Research Institute, Lithuania
     orcid: 'https://orcid.org/0000-0003-2894-3935'
-  - given-names: Michael J.
-    family-names: White
-    email: mike.white2@usda.gov
-    affiliation: >-
-      Grassland Soil and Water Research Laboratory, USDA
-      Agricultural Research Service (ARS)
-    orcid: 'https://orcid.org/0000-0002-1641-0077'
   
 identifiers:
   - type: doi
